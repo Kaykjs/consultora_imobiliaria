@@ -1,24 +1,24 @@
-let indiceAtual = 0;
-const slides = document.querySelectorAll(".primary-slide");
-const totalSlides = slides.length;
+if (document.querySelector('.hero-slider')) {
+  const heroSlides = document.querySelectorAll('.hero-slide');
+  let heroIndex = 0;
 
-// Função que troca para o próximo slide
-function proximoSlide() {
-  // Remove a classe active do slide atual
-  slides[indiceAtual].classList.remove("active");
-  
-  // Avança o índice
-  indiceAtual = (indiceAtual + 1) % totalSlides;
-  
-  // Adiciona active no próximo slide
-  slides[indiceAtual].classList.add("active");
+  function nextHeroSlide() {
+    // Remove active do slide atual
+    heroSlides[heroIndex].classList.remove('active');
+    
+    // Avança para o próximo
+    heroIndex = (heroIndex + 1) % heroSlides.length;
+    
+    // Adiciona active no próximo
+    heroSlides[heroIndex].classList.add('active');
+  }
+
+  // Troca automaticamente a cada 5 segundos
+  setInterval(nextHeroSlide, 5000);
+
+  // Garante que o primeiro slide esteja ativo
+  heroSlides[0].classList.add('active');
 }
-
-// Troca automaticamente a cada 8 segundos
-setInterval(proximoSlide, 8000);
-
-// Garante que o primeiro slide comece visível
-slides[indiceAtual].classList.add("active");
 
 
 

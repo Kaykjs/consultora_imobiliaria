@@ -125,93 +125,85 @@ body {
   display: none;
 }
 
-/* ================== HERO ================== */
+/* =============================================
+   SEÇÃO HERO - COM BORDA MARROM NO SLIDER
+   Cole isso no lugar do CSS antigo do hero
+============================================= */
+
 .hero {
   background: rgba(247, 246, 238);
+  padding: 100px 20px 60px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: relative;
   overflow: visible;
-  padding: 100px 20px 60px;
-  text-align: center;
 }
 
-.hero-top {
+/* Cabeçalho (Título + Subtítulo) */
+.hero-header {
+  text-align: center;
   margin-bottom: 50px;
-  position: relative;
-  z-index: 3;
+  z-index: 10;
 }
 
 .hero-title {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-size: clamp(2.5rem, 8vw, 6.5rem);
   color: #1E403A;
   margin-bottom: 15px;
   line-height: 1.1;
 }
 
 .hero-subtitle {
-  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  font-size: clamp(1.1rem, 3vw, 1.8rem);
   color: #5C6B6A;
   font-weight: 400;
-  margin-bottom: 30px;
 }
 
-/* MOBILE - Layout vertical: Foto Alice no topo, bloco marrom com slider embaixo */
-.hero-visual-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* ===== MOBILE (< 768px) ===== */
+.hero-images {
   width: 100%;
   max-width: 500px;
-  margin: 0 auto;
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
 }
 
-/* Foto da Alice - NO TOPO */
-.hero-main-photo {
-  display: block;
+/* Foto da Alice - no topo */
+.hero-photo {
   width: 100%;
-  max-width: 400px;
-  margin: 0;
-  z-index: 2;
   order: 1;
 }
 
-.hero-main-photo img {
+.hero-photo img {
   width: 100%;
   height: auto;
   display: block;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Bloco marrom com slider dentro - EMBAIXO */
-.hero-visual {
-  display: block;
-  width: 100%;
-  background: #B86E4E;
-  position: relative;
-  padding: 40px 20px;
-  order: 2;
+/* Bloco Marrom - ESCONDIDO no mobile */
+.hero-brown-block {
+  display: none;
 }
 
-/* Slider dentro do bloco marrom */
-.primary-slider {
-  display: block;
-  width: 65%;
-  max-width: 260px;
-  height: 220px;
-  margin: 0 auto;
+/* Slider com BORDA MARROM */
+.hero-slider {
+  width: 75%;
+  max-width: 320px;
+  height: 260px;
+  position: relative;
   overflow: hidden;
+  margin: 0 auto;
+  order: 2;
+  border: 12px solid #B86E4E;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  position: relative;
 }
 
-.primary-slides {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.primary-slide {
+.hero-slide {
   position: absolute;
   top: 0;
   left: 0;
@@ -221,11 +213,11 @@ body {
   transition: opacity 1.2s ease-in-out;
 }
 
-.primary-slide.active {
+.hero-slide.active {
   opacity: 1;
 }
 
-.primary-slide img {
+.hero-slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -233,123 +225,88 @@ body {
 }
 
 /* Mobile maior */
-@media (min-width: 400px) {
-  .hero-main-photo {
-    max-width: 420px;
-  }
-
-  .primary-slider {
-    width: 60%;
-    max-width: 280px;
-    height: 240px;
-  }
-
-  .hero-visual {
-    padding: 45px 20px;
+@media (min-width: 480px) {
+  .hero-slider {
+    width: 70%;
+    max-width: 350px;
+    height: 280px;
+    border-width: 15px;
   }
 }
 
-/* ================== TABLET (768px - 1023px) ================== */
+/* ===== TABLET (768px - 1023px) ===== */
 @media (min-width: 768px) and (max-width: 1023px) {
   .hero {
     padding: 120px 30px 80px;
   }
 
-  .hero-top {
-    margin-bottom: 60px;
+  .hero-header {
+    margin-bottom: 70px;
   }
 
-  /* Container lado a lado */
-  .hero-visual-container {
+  .hero-images {
+    max-width: 900px;
+    min-height: 550px;
     display: flex;
     flex-direction: row;
-    align-items: stretch;
-    max-width: 900px;
-    margin: 0 auto;
-    gap: 0;
-  }
-
-  /* Slider à esquerda (dentro do bloco marrom) */
-  .hero-visual {
-    width: 35%;
-    padding: 50px 20px;
-    display: flex;
     align-items: center;
     justify-content: center;
+    gap: 50px;
+  }
+
+  /* Slider com borda - à esquerda */
+  .hero-slider {
+    width: 40%;
+    max-width: 350px;
+    height: 450px;
     order: 1;
-    margin: 0;
+    border-width: 15px;
   }
 
-  .primary-slider {
-    width: 90%;
-    max-width: 260px;
-    height: 280px;
-  }
-
-  /* Foto Alice no centro */
-  .hero-main-photo {
-    width: 35%;
-    max-width: none;
-    margin: 0;
+  /* Foto Alice - à direita */
+  .hero-photo {
+    width: 45%;
+    max-width: 450px;
     order: 2;
-    display: flex;
-    align-items: center;
   }
 
-  .hero-main-photo img {
+  .hero-photo img {
     width: 100%;
     height: auto;
   }
 
-  /* Bloco marrom vazio à direita (pseudo-elemento) */
-  .hero-visual::after {
-    content: '';
-    position: absolute;
-    right: -86%;
-    top: 0;
-    width: 86%;
-    height: 100%;
-    background: #B86E4E;
-    z-index: -1;
+  /* Bloco marrom continua escondido no tablet */
+  .hero-brown-block {
+    display: none;
+  }
+
+  /* Remove pseudo-elemento */
+  .hero-images::after {
+    display: none;
   }
 }
 
-/* ================== DESKTOP (>= 1024px) ================== */
+/* ===== DESKTOP (>= 1024px) ===== */
 @media (min-width: 1024px) {
   .hero {
     padding: 140px 40px 100px;
     overflow: hidden;
   }
 
-  .hero-top {
-    display: block;
+  .hero-header {
     margin-bottom: 80px;
   }
 
-  .hero-title {
-    font-size: clamp(4rem, 8vw, 6.5rem);
-  }
-
-  .hero-subtitle {
-    font-size: clamp(1.4rem, 2.5vw, 1.8rem);
-  }
-
-  .hero-visual-container {
-    display: block;
+  .hero-images {
     position: relative;
     width: 100%;
     max-width: none;
     height: 600px;
-    margin: 0;
+    display: block;
   }
 
-  /* Remove pseudo-elemento do tablet */
-  .hero-visual::after {
-    display: none;
-  }
-
-  /* Bloco marrom à direita */
-  .hero-visual {
+  /* Bloco marrom - 52% à direita, altura total */
+  .hero-brown-block {
     display: block;
     position: absolute;
     top: 0;
@@ -358,13 +315,10 @@ body {
     height: 100%;
     background: #B86E4E;
     z-index: 1;
-    padding: 0;
-    order: initial;
   }
 
-  /* Foto Alice à esquerda */
-  .hero-main-photo {
-    display: block;
+  /* Foto Alice - 48% à esquerda */
+  .hero-photo {
     position: absolute;
     left: 3%;
     top: 50%;
@@ -376,195 +330,62 @@ body {
     order: initial;
   }
 
-  .hero-main-photo img {
+  .hero-photo img {
     width: 100%;
     height: auto;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
   }
 
-  /* Slider dentro do bloco marrom */
-  .primary-slider {
-    display: block;
+  /* Slider com BORDA BRANCA no desktop - dentro do bloco marrom à direita */
+  .hero-slider {
     position: absolute;
     right: 7%;
     top: 50%;
     transform: translateY(-50%);
     width: 360px;
     height: 480px;
-    margin: 0;
     max-width: none;
-    overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    margin: 0;
     z-index: 3;
+    order: initial;
+    border: 15px solid #ffffff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
   }
 }
 
-/* Desktop médio */
+/* Desktop Médio */
 @media (min-width: 1200px) {
   .hero {
     padding: 160px 60px 100px;
   }
 
-  .hero-visual-container {
+  .hero-images {
     height: 650px;
   }
 
-  .hero-main-photo {
+  .hero-photo {
     left: 5%;
     max-width: 550px;
   }
 
-  .primary-slider {
+  .hero-slider {
     width: 380px;
     height: 520px;
     right: 8%;
   }
 }
 
-/* Desktop grande */
+/* Desktop Grande */
 @media (min-width: 1400px) {
-  .hero-visual-container {
+  .hero-images {
     height: 700px;
   }
 
-  .hero-main-photo {
+  .hero-photo {
     left: 8%;
     max-width: 580px;
   }
 
-  .primary-slider {
-    width: 400px;
-    height: 540px;
-    right: 10%;
-  }
-}
-
-/* ================== DESKTOP (>= 1024px) ================== */
-@media (min-width: 1024px) {
-  .hero {
-    padding: 140px 40px 100px;
-    overflow: hidden;
-  }
-
-  .hero-visual-container {
-    display: block;
-    position: relative;
-    width: 100%;
-    max-width: none;
-    height: 600px;
-    margin: 40px 0 0;
-    padding-bottom: 0;
-  }
-
-  /* Bloco marrom à direita */
-  .hero-visual {
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 52%;
-    height: 100%;
-    background: #B86E4E;
-    z-index: 1;
-    margin: 0;
-  }
-
-  /* Foto da Alice à esquerda */
-  .hero-main-photo {
-    display: block;
-    position: absolute;
-    left: 3%;
-    top: 50%;
-    bottom: auto;
-    transform: translateY(-50%);
-    width: 48%;
-    max-width: 500px;
-    margin: 0;
-    z-index: 2;
-  }
-
-  .hero-main-photo img {
-    width: 100%;
-    height: auto;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
-  }
-
-  /* Slider pequeno à direita */
-  .primary-slider {
-    display: block;
-    position: absolute;
-    right: 7%;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 340px;
-    height: 460px;
-    margin: 0;
-    overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-    z-index: 3;
-  }
-
-  .primary-slides {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-
-  .primary-slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 1.2s ease-in-out;
-  }
-
-  .primary-slide.active {
-    opacity: 1;
-  }
-
-  .primary-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-
-/* Desktop médio */
-@media (min-width: 1200px) {
-  .hero {
-    padding: 160px 60px 100px;
-  }
-
-  .hero-visual-container {
-    height: 650px;
-  }
-
-  .hero-main-photo {
-    left: 5%;
-    max-width: 530px;
-  }
-
-  .primary-slider {
-    width: 370px;
-    height: 500px;
-    right: 8%;
-  }
-}
-
-/* Desktop grande */
-@media (min-width: 1400px) {
-  .hero-visual-container {
-    height: 700px;
-  }
-
-  .hero-main-photo {
-    left: 8%;
-    max-width: 560px;
-  }
-
-  .primary-slider {
+  .hero-slider {
     width: 400px;
     height: 540px;
     right: 10%;
