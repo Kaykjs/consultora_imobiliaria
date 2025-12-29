@@ -16,36 +16,31 @@
     
 <div id="header"></div>
 
-<section class="hero">
-  <!-- Parte superior: Título e subtítulo -->
+<section id="home" class="hero">
   <div class="hero-top">
     <h1 class="hero-title">Alice Mendes</h1>
     <p class="hero-subtitle">Consultora Imobiliária</p>
   </div>
 
-  <!-- HERO VISUAL COM HOVER NA DIREITA -->
-<div class="hero-visual">
-  <!-- Foto principal da Alice (esquerda) -->
-  <div class="hero-main-photo">
-    <img src="imagens/alice_mendes.avif" alt="Alice Mendes">
+  <div class="hero-visual-container">
+    <div class="hero-visual"></div>
+    <div class="hero-main-photo">
+      <img src="imagens/alice_mendes.avif" alt="Alice Mendes">
+    </div>
+    <div class="primary-slider">
+      <div class="primary-slides">
+        <div class="primary-slide active">
+          <img src="imagens/casa_moderna_branca.webp" alt="Projeto 1">
+        </div>
+        <div class="primary-slide">
+          <img src="imagens/escada.webp" alt="Projeto 2">
+        </div>
+        <div class="primary-slide">
+          <img src="imagens/piscina.jpeg" alt="Projeto 3">
+        </div>
+      </div>
+    </div>
   </div>
-
-  <!-- SLIDER PRINCIPAL AUTOMÁTICO -->  
-<section class="primary-slider">
-  <div class="primary-slides">
-    <div class="primary-slide fade active">
-      <img src="imagens/casa_moderna_branca.webp" alt="Imóvel 1">
-    </div>
-    <div class="primary-slide fade">
-      <img src="imagens/escada.webp" alt="Imóvel 2">
-    </div>
-    <div class="primary-slide fade">
-      <img src="imagens/piscina.jpeg" alt="Imóvel 3">
-    </div>
-  </div>
-</section>
-
-</div>
 </section>
 
 <!-- Seção Sobre Mim -->
@@ -179,7 +174,7 @@
       <h3 class="visita-title">Visita Grátis</h3>
       <p class="visita-info">1 h</p>
       <p class="visita-info">Grátis</p>
-      <a href="" class="btn-agendar">Agendar</a>
+      <a href="agendar.html" class="btn-agendar">Agendar</a>
     </div>
   </div>
 
@@ -278,6 +273,6 @@ fetch('includes/footer.html')
   .then(data => document.getElementById('footer').innerHTML = data);
 </script>
 
-<script src="slider.js"></script>
+<script src="main.js"></script>
 </body>
 </html>

@@ -7,7 +7,7 @@
 
 body {
   font-family: Arial, sans-serif;
-  padding-top: 80px; /* espaço pro header fixo */
+  padding-top: 80px;
 }
 
 /* ==== Header ==== */
@@ -16,7 +16,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background:rgba(247, 246, 238);
+  background: rgba(247, 246, 238);
   position: fixed;
   top: 0;
   left: 0;
@@ -44,16 +44,15 @@ body {
   display: flex;
   flex-direction: column;
   line-height: 1.1;
-  color: #1E403A; /* verde-escuro elegante */
+  color: #1E403A;
   font-family: 'Playfair Display', serif;
   font-weight: 500;
 }
 
-.nome{
+.nome {
   font-size: 32px;
 }
 
-/* Hamburger icon */
 .hamburger {
   display: flex;
   flex-direction: column;
@@ -73,7 +72,6 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Animação do hamburger virando X */
 #menu-toggle:checked + .hamburger span:nth-child(1) {
   transform: rotate(45deg) translate(6px, 6px);
 }
@@ -86,7 +84,6 @@ body {
   transform: rotate(-45deg) translate(7px, -7px);
 }
 
-/* Menu (escondido por padrão) */
 .nav-menu {
   position: fixed;
   top: 0;
@@ -117,81 +114,101 @@ body {
 }
 
 .nav-menu a:hover {
-  color: #896b50; /* cor de destaque */
+  color: #896b50;
 }
 
-/* Quando o checkbox está marcado → menu aparece */
 #menu-toggle:checked ~ .nav-menu {
   transform: translateY(0);
 }
 
-/* Esconde o checkbox */
 .menu-toggle {
   display: none;
 }
 
-
-/* ==== Hero e Seções==== */
+/* ================== HERO ================== */
 .hero {
   background: rgba(247, 246, 238);
-  overflow: hidden;
-  height: 400px;
+  position: relative;
+  overflow: visible;
+  padding: 100px 20px 60px;
+  text-align: center;
 }
 
-/* Parte superior: título centralizado */
 .hero-top {
-  text-align: center;
-  padding: 80px 20px 60px;
+  margin-bottom: 50px;
+  position: relative;
+  z-index: 3;
 }
 
 .hero-title {
   font-family: 'Playfair Display', serif;
-  font-size: 64px;
-  font-weight: 500;
-  color: #1E403A; /* verde-escuro elegante */
-  margin-bottom: 20px;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  color: #1E403A;
+  margin-bottom: 15px;
+  line-height: 1.1;
 }
 
 .hero-subtitle {
-  font-size: 24px;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
   color: #5C6B6A;
   font-weight: 400;
-  letter-spacing: 1px;
+  margin-bottom: 30px;
 }
 
-/* Hero Visual com hover na direita */
-.hero-visual {
-  position: absolute;
-  height: 530px;
-  width: 80%;
-  margin-left: 160px;
-  background: #B86E4E;
+/* MOBILE - Layout vertical: Foto Alice no topo, bloco marrom com slider embaixo */
+.hero-visual-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  gap: 20px;
 }
 
-/* Foto da Alice - esquerda */
+/* Foto da Alice - NO TOPO */
 .hero-main-photo {
-  width: 50%;
-  position: absolute;
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  margin: 0;
+  z-index: 2;
+  order: 1;
 }
 
 .hero-main-photo img {
   width: 100%;
-  height: 100%; 
+  height: auto;
+  display: block;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Slider de fotos - direita */
+/* Bloco marrom com slider dentro - EMBAIXO */
+.hero-visual {
+  display: block;
+  width: 100%;
+  background: #B86E4E;
+  position: relative;
+  padding: 40px 20px;
+  order: 2;
+}
+
+/* Slider dentro do bloco marrom */
 .primary-slider {
-  width: 300px;
-  height: 480px;
-  margin-left: 62%;
-  margin-top: 20px;
+  display: block;
+  width: 65%;
+  max-width: 260px;
+  height: 220px;
+  margin: 0 auto;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   position: relative;
 }
 
 .primary-slides {
+  position: relative;
   width: 100%;
   height: 100%;
-  position: relative;
 }
 
 .primary-slide {
@@ -201,7 +218,7 @@ body {
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 1.2s ease-in-out; /* fade suave */
+  transition: opacity 1.2s ease-in-out;
 }
 
 .primary-slide.active {
@@ -212,18 +229,346 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-/* Overlay escuro leve (opcional - dá um toque elegante) */
-.primary-slide::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.15);
-  z-index: 1;
+/* Mobile maior */
+@media (min-width: 400px) {
+  .hero-main-photo {
+    max-width: 420px;
+  }
+
+  .primary-slider {
+    width: 60%;
+    max-width: 280px;
+    height: 240px;
+  }
+
+  .hero-visual {
+    padding: 45px 20px;
+  }
+}
+
+/* ================== TABLET (768px - 1023px) ================== */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero {
+    padding: 120px 30px 80px;
+  }
+
+  .hero-top {
+    margin-bottom: 60px;
+  }
+
+  /* Container lado a lado */
+  .hero-visual-container {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    max-width: 900px;
+    margin: 0 auto;
+    gap: 0;
+  }
+
+  /* Slider à esquerda (dentro do bloco marrom) */
+  .hero-visual {
+    width: 35%;
+    padding: 50px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    order: 1;
+    margin: 0;
+  }
+
+  .primary-slider {
+    width: 90%;
+    max-width: 260px;
+    height: 280px;
+  }
+
+  /* Foto Alice no centro */
+  .hero-main-photo {
+    width: 35%;
+    max-width: none;
+    margin: 0;
+    order: 2;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-main-photo img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Bloco marrom vazio à direita (pseudo-elemento) */
+  .hero-visual::after {
+    content: '';
+    position: absolute;
+    right: -86%;
+    top: 0;
+    width: 86%;
+    height: 100%;
+    background: #B86E4E;
+    z-index: -1;
+  }
+}
+
+/* ================== DESKTOP (>= 1024px) ================== */
+@media (min-width: 1024px) {
+  .hero {
+    padding: 140px 40px 100px;
+    overflow: hidden;
+  }
+
+  .hero-top {
+    display: block;
+    margin-bottom: 80px;
+  }
+
+  .hero-title {
+    font-size: clamp(4rem, 8vw, 6.5rem);
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  }
+
+  .hero-visual-container {
+    display: block;
+    position: relative;
+    width: 100%;
+    max-width: none;
+    height: 600px;
+    margin: 0;
+  }
+
+  /* Remove pseudo-elemento do tablet */
+  .hero-visual::after {
+    display: none;
+  }
+
+  /* Bloco marrom à direita */
+  .hero-visual {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 52%;
+    height: 100%;
+    background: #B86E4E;
+    z-index: 1;
+    padding: 0;
+    order: initial;
+  }
+
+  /* Foto Alice à esquerda */
+  .hero-main-photo {
+    display: block;
+    position: absolute;
+    left: 3%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48%;
+    max-width: 520px;
+    margin: 0;
+    z-index: 2;
+    order: initial;
+  }
+
+  .hero-main-photo img {
+    width: 100%;
+    height: auto;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Slider dentro do bloco marrom */
+  .primary-slider {
+    display: block;
+    position: absolute;
+    right: 7%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 360px;
+    height: 480px;
+    margin: 0;
+    max-width: none;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    z-index: 3;
+  }
+}
+
+/* Desktop médio */
+@media (min-width: 1200px) {
+  .hero {
+    padding: 160px 60px 100px;
+  }
+
+  .hero-visual-container {
+    height: 650px;
+  }
+
+  .hero-main-photo {
+    left: 5%;
+    max-width: 550px;
+  }
+
+  .primary-slider {
+    width: 380px;
+    height: 520px;
+    right: 8%;
+  }
+}
+
+/* Desktop grande */
+@media (min-width: 1400px) {
+  .hero-visual-container {
+    height: 700px;
+  }
+
+  .hero-main-photo {
+    left: 8%;
+    max-width: 580px;
+  }
+
+  .primary-slider {
+    width: 400px;
+    height: 540px;
+    right: 10%;
+  }
+}
+
+/* ================== DESKTOP (>= 1024px) ================== */
+@media (min-width: 1024px) {
+  .hero {
+    padding: 140px 40px 100px;
+    overflow: hidden;
+  }
+
+  .hero-visual-container {
+    display: block;
+    position: relative;
+    width: 100%;
+    max-width: none;
+    height: 600px;
+    margin: 40px 0 0;
+    padding-bottom: 0;
+  }
+
+  /* Bloco marrom à direita */
+  .hero-visual {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 52%;
+    height: 100%;
+    background: #B86E4E;
+    z-index: 1;
+    margin: 0;
+  }
+
+  /* Foto da Alice à esquerda */
+  .hero-main-photo {
+    display: block;
+    position: absolute;
+    left: 3%;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    width: 48%;
+    max-width: 500px;
+    margin: 0;
+    z-index: 2;
+  }
+
+  .hero-main-photo img {
+    width: 100%;
+    height: auto;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Slider pequeno à direita */
+  .primary-slider {
+    display: block;
+    position: absolute;
+    right: 7%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 340px;
+    height: 460px;
+    margin: 0;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    z-index: 3;
+  }
+
+  .primary-slides {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .primary-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+  }
+
+  .primary-slide.active {
+    opacity: 1;
+  }
+
+  .primary-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+/* Desktop médio */
+@media (min-width: 1200px) {
+  .hero {
+    padding: 160px 60px 100px;
+  }
+
+  .hero-visual-container {
+    height: 650px;
+  }
+
+  .hero-main-photo {
+    left: 5%;
+    max-width: 530px;
+  }
+
+  .primary-slider {
+    width: 370px;
+    height: 500px;
+    right: 8%;
+  }
+}
+
+/* Desktop grande */
+@media (min-width: 1400px) {
+  .hero-visual-container {
+    height: 700px;
+  }
+
+  .hero-main-photo {
+    left: 8%;
+    max-width: 560px;
+  }
+
+  .primary-slider {
+    width: 400px;
+    height: 540px;
+    right: 10%;
+  }
 }
 
 /* Seção Sobre Mim */
@@ -232,7 +577,7 @@ body {
   padding: 100px 20px;
   text-align: center;
   background: #ffffff;
-  margin-top: 400px;
+  margin-top: 60px;
 }
 
 .about-container {
@@ -242,19 +587,18 @@ body {
 
 .about-title {
   font-family: 'Playfair Display', serif;
-  font-size: 48px;
+  font-size: clamp(36px, 6vw, 48px);
   color: #1E403A;
   margin-bottom: 40px;
 }
 
 .about-text {
-  font-size: 18px;
+  font-size: clamp(16px, 2vw, 18px);
   line-height: 1.8;
   color: #555;
   margin-bottom: 50px;
 }
 
-/* Botão Saiba Mais com hover bonito */
 .btn-saiba-mais {
   display: inline-block;
   padding: 15px 40px;
@@ -283,7 +627,7 @@ body {
 
 .slider {
   position: relative;
-  height: 70vh; /* altura quase tela cheia - ajusta se quiser */
+  height: 70vh;
 }
 
 .slide {
@@ -303,7 +647,7 @@ body {
 .slide img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* cobre toda a área sem distorcer */
+  object-fit: cover;
 }
 
 .slide-text {
@@ -317,7 +661,7 @@ body {
 }
 
 .small-text {
-  font-size: 32px;
+  font-size: clamp(24px, 4vw, 32px);
   font-weight: 400;
   letter-spacing: 2px;
   opacity: 0.9;
@@ -325,12 +669,11 @@ body {
 
 .big-text {
   font-family: 'Playfair Display', serif;
-  font-size: 80px;
+  font-size: clamp(48px, 8vw, 80px);
   font-weight: 700;
   margin-top: 10px;
 }
 
-/* Overlay escuro no hover (efeito suave) */
 .slide::before {
   content: '';
   position: absolute;
@@ -347,41 +690,39 @@ body {
   background: rgba(0, 0, 0, 0.5);
 }
 
-/* Setas */
+/* Setas - CORRIGIDO */
 .prev, .next {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 100px; /* comprimento total da seta */
-  height: 60px; /* altura da área clicável */
+  width: 100px;
+  height: 60px;
   cursor: pointer;
   z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: none; /* remove fundo */
+  background: none;
   border: none;
   padding: 0;
 }
 
 .prev {
-  left: 40px; /* distância da borda esquerda */
+  left: 5%;
 }
 
 .next {
-  right: 40px; /* distância da borda direita */
+  right: 5%;
 }
 
-/* Linha horizontal da seta */
 .arrow-line {
   position: absolute;
-  width: 80px; /* comprimento da linha */
+  width: 60px;
   height: 3px;
   background: #ffffff;
   border-radius: 2px;
 }
 
-/* Ponta da flecha (triângulo arredondado) */
 .arrow-head {
   position: absolute;
   width: 20px;
@@ -391,7 +732,6 @@ body {
   border-radius: 2px;
 }
 
-/* Direção da seta esquerda */
 .arrow-left .arrow-line {
   right: 20px;
 }
@@ -401,7 +741,6 @@ body {
   transform: rotate(-135deg);
 }
 
-/* Direção da seta direita */
 .arrow-right .arrow-line {
   left: 20px;
 }
@@ -411,17 +750,15 @@ body {
   transform: rotate(45deg);
 }
 
-/* Hover: deixa mais brilhante ou aumenta um pouco */
 .prev:hover .arrow-line,
 .prev:hover .arrow-head,
 .next:hover .arrow-line,
 .next:hover .arrow-head {
-  background: #B86E4E; /* ou #ffffff com opacity maior */
+  background: #B86E4E;
   border-color: #B86E4E;
   opacity: 1;
 }
 
-/* Pontinhos */
 .dots {
   position: absolute;
   bottom: 30px;
@@ -459,19 +796,18 @@ body {
 
 .services-title {
   font-family: 'Playfair Display', serif;
-  font-size: 48px;
+  font-size: clamp(36px, 6vw, 48px);
   color: #1E403A;
   margin-bottom: 20px;
 }
 
 .services-subtitle {
-  font-size: 22px;
+  font-size: clamp(18px, 3vw, 22px);
   color: #8B7E6A;
   margin-bottom: 80px;
   font-weight: 400;
 }
 
-/* Grid dos cards */
 .services-grid {
   display: flex;
   justify-content: center;
@@ -484,11 +820,6 @@ body {
   flex: 1;
   min-width: 280px;
   max-width: 360px;
-}
-
-.service-icon {
-  margin-bottom: 30px;
-  display: block;
 }
 
 .service-card-title {
@@ -504,52 +835,27 @@ body {
   color: #666;
 }
 
-/* Botão Saiba Mais */
-.btn-saiba-mais {
-  display: inline-block;
-  padding: 15px 40px;
-  border: 2px solid #B86E4E;
-  color: #B86E4E;
-  font-size: 18px;
-  font-weight: 500;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.4s ease;
-}
-
-.btn-saiba-mais:hover {
-  background: #B86E4E;
-  color: #ffffff;
-}
-
-
-/* Seção CTA + Depoimentos */
-.cta-depoimentos {
-  background: #1E403A; /* verde-escuro do template */
-  padding: 120px 20px;
+/* Seção CTA + Depoimentos - CORRIGIDO */
+.cta-container {
+  background: rgba(247, 246, 238);
+  padding: 80px 20px;
   text-align: center;
-  margin-top: 250px;
+  position: relative;
 }
 
 .cta-title {
   font-family: 'Playfair Display', serif;
-  font-size: 48px;
+  font-size: clamp(36px, 6vw, 48px);
   color: #1E403A;
-  position: absolute;
-  margin-left: 35%;
-  margin-top: 40px;
+  margin-bottom: 60px;
 }
 
 .visita-card {
-  width: 800px;
-  margin: 0 auto 140px;
-  padding: 40px 40px;
-  background: rgba(247, 246, 238);;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 40px;
+  background: #ffffff;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  position: absolute;
-  margin-left: 390px;
-  margin-top: 170px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -558,13 +864,13 @@ body {
 
 .visita-title {
   font-family: 'Playfair Display', serif;
-  font-size: 36px;
+  font-size: clamp(28px, 5vw, 36px);
   color: #1E403A;
   margin-bottom: 10px;
 }
 
 .visita-info {
-  font-size: 24px;
+  font-size: clamp(20px, 3vw, 24px);
   color: #666;
   margin: 15px 0;
 }
@@ -588,40 +894,39 @@ body {
   color: #ffffff;
 }
 
-/* Depoimentos */
-.depoimentos-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 48px;
-  color: #B86E4E; /* marrom do template */
-  margin-bottom: 40px;
-  margin-top: 180px;
+/* Depoimentos - CORRIGIDO */
+.cta-depoimentos {
+  background: #1E403A;
+  padding: 80px 20px;
+  text-align: center;
 }
 
-.depoimentos-slider {
-  position: relative;
-  max-width: 900px;
-  margin: 0 auto;
+.depoimentos-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 6vw, 48px);
+  color: #B86E4E;
+  margin-bottom: 60px;
 }
 
 .depo-slider {
   position: relative;
-  width: 100%;
+  max-width: 900px;
   margin: 0 auto;
-  overflow: hidden; /* evita que slides escondidos apareçam */
+  padding: 0 60px;
 }
 
 .depo-slide {
-  display: none; /* esconde todos */
+  display: none;
   text-align: center;
   padding: 20px;
 }
 
 .depo-slide.active {
-  display: block; /* mostra só o ativo */
+  display: block;
 }
 
 .depo-texto {
-  font-size: 22px;
+  font-size: clamp(18px, 3vw, 22px);
   line-height: 1.8;
   font-style: italic;
   color: #ffffff;
@@ -632,30 +937,34 @@ body {
 }
 
 .depo-nome {
-  font-size: 26px;
+  font-size: clamp(20px, 3vw, 26px);
   font-weight: 500;
   color: #ffffff;
 }
 
-/* Setas */
 .depo-prev, .depo-next {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 60px;
+  font-size: 40px;
   color: #ffffff;
   cursor: pointer;
   opacity: 0.6;
   transition: opacity 0.3s;
+  user-select: none;
 }
 
 .depo-prev:hover, .depo-next:hover {
   opacity: 1;
 }
 
-.depo-prev { left: 300px; }
-.depo-next { right: 300px; }
+.depo-prev {
+  left: 0;
+}
 
+.depo-next {
+  right: 0;
+}
 
 /* Seção duas colunas */
 .duas-colunas {
@@ -670,10 +979,9 @@ body {
   align-items: center;
   justify-content: center;
   gap: 80px;
-  flex-wrap: wrap; /* responsivo em mobile */
+  flex-wrap: wrap;
 }
 
-/* Coluna esquerda - bloco marrom */
 .col-esquerda {
   flex: 1;
   min-width: 300px;
@@ -682,9 +990,10 @@ body {
 }
 
 .bloco-marrom {
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
   height: 600px;
-  background: #B86E4E; /* marrom-terroso */
+  background: #B86E4E;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -698,7 +1007,6 @@ body {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Coluna direita - foto consultoria */
 .col-direita {
   flex: 1;
   min-width: 300px;
@@ -707,17 +1015,15 @@ body {
 }
 
 .foto-consultoria {
-  width: 90%;
+  width: 100%;
   max-width: 600px;
   height: auto;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-  margin-bottom: 100px;
 }
-
 
 /* Seção Contato */
 .contato {
-  padding: 40px 20px;
+  padding: 80px 20px;
   background: #ffffff;
   text-align: center;
 }
@@ -729,18 +1035,17 @@ body {
 
 .contato-title {
   font-family: 'Playfair Display', serif;
-  font-size: 52px;
+  font-size: clamp(36px, 6vw, 52px);
   color: #1E403A;
   margin-bottom: 30px;
 }
 
 .contato-info {
-  font-size: 20px;
+  font-size: clamp(16px, 2.5vw, 20px);
   color: #1E403A;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
 }
 
-/* Formulário */
 .contato-form {
   text-align: left;
 }
@@ -749,15 +1054,18 @@ body {
   display: flex;
   gap: 40px;
   margin-bottom: 40px;
+  flex-wrap: wrap;
 }
 
 .form-group {
   flex: 1;
+  min-width: 250px;
   position: relative;
 }
 
 .form-group.full {
   margin-bottom: 40px;
+  min-width: 100%;
 }
 
 .contato-form input,
@@ -780,7 +1088,7 @@ body {
 .contato-form input:focus,
 .contato-form textarea:focus {
   outline: none;
-  border-bottom-color: #B86E4E; /* linha marrom no foco */
+  border-bottom-color: #B86E4E;
 }
 
 .contato-form label {
@@ -793,7 +1101,6 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Label sobe quando input tem foco ou valor */
 .contato-form input:focus ~ label,
 .contato-form input:valid ~ label,
 .contato-form textarea:focus ~ label,
@@ -803,7 +1110,6 @@ body {
   color: #B86E4E;
 }
 
-/* Botão Enviar */
 .btn-enviar {
   display: block;
   margin: 0 auto;
@@ -824,10 +1130,10 @@ body {
   color: #ffffff;
 }
 
-
-/* === Seção Sobre Mim === */
+/* Página Sobre */
 .sobre {
   background: rgba(247, 246, 238);
+  padding: 80px 20px;
 }
 
 .sobre-container {
@@ -838,46 +1144,33 @@ body {
 .sobre-title {
   text-align: center;
   font-family: 'Playfair Display', serif;
-  font-size: 64px;
+  font-size: clamp(48px, 8vw, 64px);
   color: #1E403A;
-  padding-top: 80px;
-  margin-bottom: 120px;
+  margin-bottom: 80px;
 }
 
-/* Layout assimétrico */
 .sobre-layout {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 100px;
+  gap: 60px;
   flex-wrap: wrap;
 }
 
-/* Bloco marrom à esquerda */
 .sobre-esquerda {
   flex: 1;
   min-width: 300px;
   display: flex;
-  justify-content: flex-end;
-}
-
-.bloco-marrom {
-  width: 500px;
-  height: 700px;
-  background: #B86E4E;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
 }
 
 .foto-alice {
-  width: 70%;
+  width: 100%;
+  max-width: 400px;
   height: auto;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Texto à direita */
 .sobre-direita {
   flex: 1;
   min-width: 300px;
@@ -886,26 +1179,26 @@ body {
 
 .sobre-nome {
   font-family: 'Playfair Display', serif;
-  font-size: 48px;
+  font-size: clamp(36px, 6vw, 48px);
   color: #1E403A;
   margin-bottom: 10px;
 }
 
 .sobre-subtitulo {
-  font-size: 28px;
+  font-size: clamp(22px, 4vw, 28px);
   color: #1E403A;
   margin-bottom: 20px;
 }
 
 .sobre-concretizando {
-  font-size: 22px;
+  font-size: clamp(18px, 3vw, 22px);
   color: #8B7E6A;
   margin-bottom: 40px;
   font-weight: 400;
 }
 
 .sobre-texto {
-  font-size: 18px;
+  font-size: clamp(16px, 2vw, 18px);
   line-height: 1.8;
   color: #555;
   margin-bottom: 30px;
@@ -929,9 +1222,9 @@ body {
   color: #ffffff;
 }
 
-/* === Seção Serviços === */
+/* Página Serviços */
 .servicos {
-  padding: 120px 20px;
+  padding: 80px 20px;
   background: rgba(247, 246, 238);
   text-align: center;
 }
@@ -943,21 +1236,18 @@ body {
 
 .servicos-title {
   font-family: 'Playfair Display', serif;
-  font-size: 64px;
+  font-size: clamp(48px, 8vw, 64px);
   color: #1E403A;
-  margin-bottom: 120px;
-}
-
-.servicos-list {
-  margin-bottom: 40px;
+  margin-bottom: 80px;
 }
 
 .servico-item {
   display: flex;
   align-items: flex-start;
   gap: 40px;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
   text-align: left;
+  flex-wrap: wrap;
 }
 
 .servico-icon {
@@ -966,17 +1256,18 @@ body {
 
 .servico-conteudo {
   flex: 1;
+  min-width: 250px;
 }
 
 .servico-titulo {
   font-family: 'Playfair Display', serif;
-  font-size: 28px;
+  font-size: clamp(22px, 4vw, 28px);
   color: #1E403A;
-  
+  margin-bottom: 15px;
 }
 
 .servico-texto {
-  font-size: 18px;
+  font-size: clamp(16px, 2vw, 18px);
   line-height: 1.8;
   color: #666;
 }
@@ -984,11 +1275,10 @@ body {
 .servico-separator {
   border: none;
   border-top: 1px solid #ddd;
-  margin: 80px auto;
+  margin: 60px auto;
   width: 80%;
 }
 
-/* Botão Agende Visita Grátis */
 .btn-agende-visita {
   display: inline-block;
   padding: 15px 50px;
@@ -1007,8 +1297,7 @@ body {
   color: #ffffff;
 }
 
-
-/* ==== Footer ==== */
+/* Footer */
 .footer {
   background: #1E403A;
   padding: 60px 20px;
@@ -1021,7 +1310,6 @@ body {
   margin: 0 auto;
 }
 
-/* Ícones de redes sociais */
 .social-icons {
   margin-bottom: 30px;
 }
@@ -1039,180 +1327,28 @@ body {
   opacity: 1;
 }
 
-/* Copyright */
 .copyright {
   font-size: 16px;
   opacity: 0.8;
 }
 
-
 /* =============================================
-   RESPONSIVIDADE
+   RESPONSIVIDADE MOBILE
 ============================================= */
 
-/* Tablets e telas menores (até 1024px) */
-@media (max-width: 1024px) {
-  .logo-container {
-    margin-left: 20px;
-    gap: 15px;
-  }
-
-  .nome {
-    font-size: 28px;
-  }
-
-  .hamburger {
-    margin-right: 30px;
-  }
-
-  .hero-title {
-    font-size: 52px;
-  }
-
-  .hero-subtitle {
-    font-size: 20px;
-  }
-
-  .primary-slider {
-    width: 260px;
-    height: 420px;
-    margin-left: 58%;
-  }
-
-  .visita-card {
-    width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-    position: static;
-    transform: none;
-    margin-top: 100px;
-  }
-
-  .cta-title {
-    position: static;
-    margin-top: 0;
-  }
-
-  .depo-prev { left: 100px; }
-  .depo-next { right: 100px; }
-}
-
-/* Tablets menores e celulares grandes (até 768px) */
 @media (max-width: 768px) {
-  /* Header - ativa menu hamburguer */
-  .hamburger {
-    display: flex;
+  body {
+    padding-top: 80px;
   }
 
   .header {
-    height: auto;
+    height: 80px;
     padding: 15px 20px;
   }
 
   .logo-container {
     margin-left: 0;
-  }
-
-  .hero {
-    height: auto;
-    min-height: 70vh;
-  }
-
-  .hero-top {
-    padding: 100px 20px 50px;
-  }
-
-  .hero-title {
-    font-size: 42px;
-  }
-
-  .hero-subtitle {
-    font-size: 18px;
-  }
-
-  /* Esconde elementos complexos do hero em mobile */
-  .hero-visual,
-  .hero-main-photo,
-  .primary-slider {
-    display: none;
-  }
-
-  .about {
-    margin-top: 0;
-    padding: 80px 20px;
-  }
-
-  .services-grid {
-    flex-direction: column;
-    gap: 50px;
-  }
-
-  .service-card {
-    max-width: 100%;
-  }
-
-  /* CTA + Depoimentos */
-  .cta-depoimentos {
-    margin-top: 100px;
-    padding: 80px 20px;
-  }
-
-  .visita-card {
-    width: 100%;
-    max-width: 500px;
-    padding: 30px 20px;
-    margin: 80px auto 100px;
-  }
-
-  .depoimentos-title {
-    margin-top: 0;
-  }
-
-  .depo-prev { left: 20px; }
-  .depo-next { right: 20px; }
-
-  /* Duas colunas */
-  .duas-colunas-container,
-  .sobre-layout {
-    flex-direction: column;
-    gap: 60px;
-  }
-
-  .bloco-marrom {
-    width: 100%;
-    max-width: 400px;
-    height: 500px;
-  }
-
-  .foto-consultoria {
-    width: 100%;
-    margin-bottom: 0;
-  }
-
-  /* Sobre */
-  .sobre-title {
-    font-size: 48px;
-    padding-top: 60px;
-  }
-
-  /* Serviços lista */
-  .servico-item {
-    flex-direction: column;
-    text-align: center;
-    gap: 20px;
-  }
-
-  /* Formulário contato */
-  .form-row {
-    flex-direction: column;
-    gap: 30px;
-  }
-}
-
-/* Celulares pequenos (até 480px) */
-@media (max-width: 480px) {
-  .header {
-    padding: 15px 15px;
+    gap: 10px;
   }
 
   .logo-icon {
@@ -1224,28 +1360,456 @@ body {
     font-size: 24px;
   }
 
+  .hamburger {
+    margin-right: 0;
+    width: 30px;
+    height: 18px;
+  }
+
+  .hero {
+    min-height: 70vh;
+    padding: 100px 20px 60px;
+  }
+
   .hero-top {
-    padding: 90px 15px 40px;
+    margin-bottom: 40px;
   }
 
-  .hero-title {
-    font-size: 36px;
+  .about {
+    margin-top: 0;
+    padding: 60px 20px;
   }
 
-  .hero-subtitle {
-    font-size: 17px;
+  .slider {
+    height: 50vh;
   }
 
-  section {
-    padding: 60px 15px;
+  .prev, .next {
+    width: 60px;
   }
 
-  .about-title,
-  .services-title,
-  .servicos-title,
-  .sobre-title,
-  .contato-title {
-    font-size: 38px;
+  .arrow-line {
+    width: 40px;
+  }
+
+  .arrow-head {
+    width: 15px;
+    height: 15px;
+  }
+
+  .services {
+    padding: 60px 20px;
+  }
+
+  .services-grid {
+    gap: 40px;
+  }
+
+  .cta-container {
+    padding: 60px 20px;
+  }
+
+  .visita-card {
+    padding: 30px 20px;
+  }
+
+  .cta-depoimentos {
+    padding: 60px 20px;
+  }
+
+  .depo-slider {
+    padding: 0 50px;
+  }
+
+  .depo-prev, .depo-next {
+    font-size: 32px;
+  }
+
+  .duas-colunas {
+    padding: 60px 20px;
+  }
+
+  .duas-colunas-container,
+  .sobre-layout {
+    gap: 40px;
+  }
+
+  .bloco-marrom {
+    height: 450px;
+  }
+
+  .contato {
+    padding: 60px 20px;
+  }
+
+  .form-row {
+    gap: 30px;
+  }
+
+  .form-group {
+    min-width: 100%;
+  }
+
+  .servico-item {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+}
+
+/* =============================================
+   PÁGINA DE AGENDAMENTO
+============================================= */
+
+.agendamento-section {
+  background: rgba(247, 246, 238);
+  padding: 140px 20px 80px;
+  min-height: 100vh;
+}
+
+.agendamento-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Link voltar */
+.voltar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #1E403A;
+  text-decoration: none;
+  font-size: 16px;
+  margin-bottom: 40px;
+  transition: color 0.3s;
+}
+
+.voltar-link:hover {
+  color: #B86E4E;
+}
+
+.voltar-link i {
+  font-size: 14px;
+}
+
+/* Título e subtítulo */
+.agendamento-header {
+  margin-bottom: 60px;
+}
+
+.agendamento-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 5vw, 42px);
+  color: #1E403A;
+  margin-bottom: 15px;
+}
+
+.agendamento-subtitle {
+  font-size: clamp(16px, 2vw, 18px);
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Layout em duas colunas */
+.agendamento-content {
+  display: flex;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+/* Coluna esquerda - Calendário */
+.calendario-col {
+  flex: 1;
+  min-width: 300px;
+}
+
+.calendario-header {
+  margin-bottom: 30px;
+}
+
+.calendario-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  color: #1E403A;
+  margin-bottom: 10px;
+}
+
+.timezone-info {
+  font-size: 14px;
+  color: #999;
+}
+
+/* Calendário */
+.calendario {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.calendario-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendario-nav button {
+  background: none;
+  border: none;
+  color: #1E403A;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.3s;
+}
+
+.calendario-nav button:hover {
+  color: #B86E4E;
+}
+
+.calendario-mes-ano {
+  font-size: 18px;
+  color: #1E403A;
+  font-weight: 500;
+}
+
+/* Dias da semana */
+.calendario-dias-semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.dia-semana {
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+  font-weight: 500;
+  padding: 8px 0;
+}
+
+/* Grade de dias */
+.calendario-dias {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.dia {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.dia:not(.vazio):not(.indisponivel):hover {
+  background: #f5f5f5;
+}
+
+.dia.vazio {
+  cursor: default;
+}
+
+.dia.indisponivel {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.dia.hoje {
+  border: 2px solid #B86E4E;
+}
+
+.dia.selecionado {
+  background: #B86E4E;
+  color: #ffffff;
+}
+
+.dia.tem-compromisso::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  background: #B86E4E;
+  border-radius: 50%;
+}
+
+/* Coluna direita - Detalhes */
+.detalhes-col {
+  flex: 1;
+  min-width: 300px;
+}
+
+.detalhes-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 30px;
+}
+
+.detalhes-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  color: #1E403A;
+  margin-bottom: 25px;
+}
+
+/* Informações do serviço */
+.servico-info {
+  margin-bottom: 25px;
+}
+
+.servico-nome {
+  font-size: 18px;
+  color: #1E403A;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.servico-detalhes {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.servico-detalhes:hover {
+  background: #f0f0f0;
+}
+
+.detalhes-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Disponibilidade */
+.disponibilidade-info {
+  background: #FFF9F0;
+  border-left: 3px solid #B86E4E;
+  padding: 15px;
+  margin-bottom: 25px;
+  border-radius: 4px;
+}
+
+.disponibilidade-info p {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.disponibilidade-info strong {
+  color: #1E403A;
+}
+
+/* Botão próxima disponibilidade */
+.btn-proxima-disponibilidade {
+  width: 100%;
+  padding: 15px;
+  background: #B86E4E;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 20px;
+}
+
+.btn-proxima-disponibilidade:hover {
+  background: #9d5f43;
+}
+
+/* Botão próximo */
+.btn-proximo {
+  width: 100%;
+  padding: 15px;
+  background: #ddd;
+  color: #999;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: not-allowed;
+}
+
+.btn-proximo.ativo {
+  background: #1E403A;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.btn-proximo.ativo:hover {
+  background: #2d5850;
+}
+
+/* Responsivo - Agendamento */
+@media (max-width: 768px) {
+  .agendamento-section {
+    padding: 120px 15px 60px;
+  }
+
+  .agendamento-content {
+    gap: 40px;
+  }
+
+  .calendario,
+  .detalhes-card {
+    padding: 20px;
+  }
+
+  .dia {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendario,
+  .detalhes-card {
+    padding: 15px;
+  }
+
+  .dia {
+    font-size: 12px;
+  }
+
+  .dia-semana {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-top {
+    padding-top: 40px;
+  }
+
+  .slider {
+    height: 40vh;
+  }
+
+  .dots {
+    bottom: 15px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    margin: 0 5px;
+  }
+
+  .depo-slider {
+    padding: 0 40px;
   }
 
   .btn-saiba-mais,
@@ -1261,19 +1825,12 @@ body {
     padding: 25px 15px;
   }
 
-  .visita-title {
-    font-size: 30px;
-  }
-
-  .visita-info {
-    font-size: 20px;
-  }
-
-  .depo-texto {
-    font-size: 19px;
-  }
-
   .bloco-marrom {
     height: 400px;
+  }
+
+  .sobre,
+  .servicos {
+    padding: 60px 15px;
   }
 }
