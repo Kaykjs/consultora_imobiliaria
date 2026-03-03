@@ -1,0 +1,161 @@
+.servicos {
+  padding: 80px 40px;
+  background: rgba(247, 246, 238, 1);
+  text-align: center;
+  min-height: 100vh;
+}
+
+.servicos-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.servicos-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 64px;
+  color: #1E403A;
+  margin-bottom: 80px;
+}
+
+.servico-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  margin-bottom: 60px;
+  text-align: left;
+}
+
+.servico-icon {
+  flex-shrink: 0;
+}
+
+.servico-conteudo {
+  flex: 1;
+}
+
+.servico-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  color: #1E403A;
+  margin-bottom: 15px;
+}
+
+.servico-texto {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #666;
+}
+
+.servico-separator {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 60px auto;
+  width: 80%;
+}
+
+.btn-agende-visita {
+  display: inline-block;
+  padding: 15px 50px;
+  border: 2px solid #B86E4E;
+  color: #B86E4E;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-decoration: none;
+  transition: all 0.4s ease;
+}
+
+.btn-agende-visita:hover {
+  background: #B86E4E;
+  color: #ffffff;
+}
+
+
+/* RESPONSIVO — SERVIÇOS */
+
+/* Desktop médio (769px – 1024px) */
+@media (max-width: 1024px) {
+  .servicos {
+    padding: 60px 30px;
+  }
+
+  .servicos-title {
+    font-size: 50px;
+    margin-bottom: 60px;
+  }
+
+  .servico-item {
+    gap: 30px;
+  }
+
+  .servico-titulo {
+    font-size: 22px;
+  }
+
+  .servico-texto {
+    font-size: 16px;
+  }
+}
+
+/* Tablet (481px – 768px) */
+@media (max-width: 768px) {
+  .servicos {
+    padding: 50px 20px;
+  }
+
+  .servicos-title {
+    font-size: 40px;
+    margin-bottom: 50px;
+  }
+
+  .servico-item {
+    gap: 25px;
+  }
+
+  .servico-separator {
+    margin: 40px auto;
+  }
+
+  .btn-agende-visita {
+    padding: 13px 35px;
+    font-size: 15px;
+  }
+}
+
+/* Mobile (até 480px) */
+@media (max-width: 480px) {
+  .servicos {
+    padding: 40px 15px;
+  }
+
+  .servicos-title {
+    font-size: 30px;
+    margin-bottom: 40px;
+  }
+
+  .servico-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .servico-titulo {
+    font-size: 20px;
+  }
+
+  .servico-texto {
+    font-size: 15px;
+  }
+
+  .servico-separator {
+    margin: 30px auto;
+    width: 90%;
+  }
+
+  .btn-agende-visita {
+    padding: 12px 28px;
+    font-size: 14px;
+  }
+}

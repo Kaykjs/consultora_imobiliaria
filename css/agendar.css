@@ -1,0 +1,413 @@
+.agendamento-section {
+  background: rgba(247, 246, 238, 1);
+  padding: 140px 40px 80px;
+  min-height: 100vh;
+}
+
+.agendamento-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.voltar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #1E403A;
+  text-decoration: none;
+  font-size: 16px;
+  margin-bottom: 40px;
+  transition: color 0.3s;
+}
+
+.voltar-link:hover {
+  color: #B86E4E;
+}
+
+.agendamento-header {
+  margin-bottom: 60px;
+}
+
+.agendamento-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 42px;
+  color: #1E403A;
+  margin-bottom: 15px;
+}
+
+.agendamento-subtitle {
+  font-size: 18px;
+  color: #666;
+  line-height: 1.6;
+}
+
+.agendamento-content {
+  display: flex;
+  gap: 60px;
+}
+
+/* COLUNA CALENDÁRIO */
+
+.calendario-col {
+  flex: 1;
+  min-width: 300px;
+}
+
+.calendario-header {
+  margin-bottom: 30px;
+}
+
+.calendario-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  color: #1E403A;
+  margin-bottom: 10px;
+}
+
+.timezone-info {
+  font-size: 14px;
+  color: #999;
+}
+
+.calendario {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 25px;
+}
+
+.calendario-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendario-nav button {
+  background: none;
+  border: none;
+  color: #1E403A;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.3s;
+}
+
+.calendario-nav button:hover {
+  color: #B86E4E;
+}
+
+.calendario-mes-ano {
+  font-size: 18px;
+  color: #1E403A;
+  font-weight: 500;
+}
+
+.calendario-dias-semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.dia-semana {
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+  font-weight: 500;
+  padding: 8px 0;
+}
+
+.calendario-dias {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.dia {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.dia:not(.vazio):not(.indisponivel):hover {
+  background: #f5f5f5;
+}
+
+.dia.vazio {
+  cursor: default;
+}
+
+.dia.indisponivel {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.dia.hoje {
+  border: 2px solid #B86E4E;
+}
+
+.dia.selecionado {
+  background: #B86E4E;
+  color: #ffffff;
+}
+
+.dia.tem-compromisso::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  background: #B86E4E;
+  border-radius: 50%;
+}
+
+/* COLUNA DETALHES */
+
+.detalhes-col {
+  flex: 1;
+  min-width: 300px;
+}
+
+.detalhes-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 30px;
+}
+
+.detalhes-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  color: #1E403A;
+  margin-bottom: 25px;
+}
+
+.servico-info {
+  margin-bottom: 25px;
+}
+
+.servico-nome {
+  font-size: 18px;
+  color: #1E403A;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.servico-detalhes {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.servico-detalhes:hover {
+  background: #f0f0f0;
+}
+
+.detalhes-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #666;
+  font-size: 14px;
+}
+
+.disponibilidade-info {
+  background: #FFF9F0;
+  border-left: 3px solid #B86E4E;
+  padding: 15px;
+  margin-bottom: 25px;
+  border-radius: 4px;
+}
+
+.disponibilidade-info p {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.disponibilidade-info strong {
+  color: #1E403A;
+}
+
+.btn-proxima-disponibilidade {
+  width: 100%;
+  padding: 15px;
+  background: #B86E4E;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 15px;
+}
+
+.btn-proxima-disponibilidade:hover {
+  background: #9d5f43;
+}
+
+.btn-proximo {
+  width: 100%;
+  padding: 15px;
+  background: #ddd;
+  color: #999;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: not-allowed;
+}
+
+.btn-proximo.ativo {
+  background: #1E403A;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.btn-proximo.ativo:hover {
+  background: #2d5850;
+}
+
+
+/* RESPONSIVO — AGENDAR */
+
+/* Desktop médio (769px – 1024px) */
+@media (max-width: 1024px) {
+  .agendamento-section {
+    padding: 120px 30px 60px;
+  }
+
+  .agendamento-title {
+    font-size: 34px;
+  }
+
+  .agendamento-content {
+    gap: 40px;
+  }
+
+  .detalhes-card {
+    padding: 25px;
+  }
+}
+
+/* Tablet (481px – 768px) */
+@media (max-width: 768px) {
+  .agendamento-section {
+    padding: 100px 20px 60px;
+  }
+
+  .agendamento-title {
+    font-size: 28px;
+  }
+
+  .agendamento-subtitle {
+    font-size: 16px;
+  }
+
+  .agendamento-header {
+    margin-bottom: 40px;
+  }
+
+  .agendamento-content {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .calendario-col,
+  .detalhes-col {
+    min-width: 100%;
+  }
+
+  .calendario {
+    padding: 20px;
+  }
+
+  .detalhes-card {
+    padding: 20px;
+  }
+
+  .detalhes-card h3 {
+    font-size: 20px;
+  }
+
+  .btn-proxima-disponibilidade,
+  .btn-proximo {
+    padding: 13px;
+    font-size: 15px;
+  }
+}
+
+/* Mobile (até 480px) */
+@media (max-width: 480px) {
+  .agendamento-section {
+    padding: 90px 15px 50px;
+  }
+
+  .agendamento-title {
+    font-size: 24px;
+  }
+
+  .calendario-header h3 {
+    font-size: 20px;
+  }
+
+  .calendario {
+    padding: 15px;
+  }
+
+  .calendario-mes-ano {
+    font-size: 16px;
+  }
+
+  .calendario-nav button {
+    font-size: 20px;
+  }
+
+  .dia {
+    font-size: 12px;
+  }
+
+  .dia-semana {
+    font-size: 11px;
+    padding: 6px 0;
+  }
+
+  .calendario-dias-semana,
+  .calendario-dias {
+    gap: 5px;
+  }
+
+  .detalhes-card {
+    padding: 15px;
+  }
+
+  .detalhes-card h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .servico-nome {
+    font-size: 16px;
+  }
+
+  .btn-proxima-disponibilidade,
+  .btn-proximo {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .voltar-link {
+    font-size: 14px;
+    margin-bottom: 25px;
+  }
+}

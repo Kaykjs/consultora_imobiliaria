@@ -1,747 +1,540 @@
-// =============================================
-// SISTEMA DE CONTROLE DE ACESSO E PERMISSÕES
-// =============================================
+const $ = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
-// Verifica se há usuário logado
-function verificarLogin() {
-  const usuarioLogado = sessionStorage.getItem('usuarioLogado');
-  return usuarioLogado ? JSON.parse(usuarioLogado) : null;
-}
+// SISTEMA DE AUTENTICAÇÃO
 
-// Verifica se o usuário tem permissão de admin/editor
-function temPermissaoEdicao() {
-  const usuario = verificarLogin();
-  return usuario && (usuario.role === 'admin' || usuario.role === 'editor');
-}
+const Auth = {
+  USUARIOS: [
+    { username: 'admin',   password: '123456',    role: 'admin',  nome: 'Administrador' },
+    { username: 'alice',   password: 'alice123',  role: 'admin',  nome: 'Alice Mendes'  },
+    { username: 'editor',  password: 'editor123', role: 'editor', nome: 'Editor'        },
+    { username: 'usuario', password: 'user123',   role: 'user',   nome: 'Usuário Comum' },
+  ],
 
-// Verifica se o usuário é admin
-function isAdmin() {
-  const usuario = verificarLogin();
-  return usuario && usuario.role === 'admin';
-}
+  getUsuario() {
+    const dado = sessionStorage.getItem('usuarioLogado');
+    return dado ? JSON.parse(dado) : null;
+  },
 
-// Função de logout
-function fazerLogout() {
-  sessionStorage.removeItem('usuarioLogado');
-  alert('Logout realizado com sucesso!');
-  location.reload();
-}
+  logado() {
+    return !!this.getUsuario();
+  },
 
-// Adiciona botão de logout no menu
-function adicionarBotaoLogout() {
-  const navMenu = document.querySelector('.nav-menu');
-  if (navMenu && !document.querySelector('.logout-btn')) {
-    const logoutItem = document.createElement('li');
-    logoutItem.innerHTML = '<a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>';
-    navMenu.appendChild(logoutItem);
-    
-    document.querySelector('.logout-btn').addEventListener('click', (e) => {
-      e.preventDefault();
-      fazerLogout();
+  temPermissaoEdicao() {
+    const u = this.getUsuario();
+    return u && (u.role === 'admin' || u.role === 'editor');
+  },
+
+  isAdmin() {
+    const u = this.getUsuario();
+    return u?.role === 'admin';
+  },
+
+  login(username, password) {
+    const encontrado = this.USUARIOS.find(
+      u => u.username === username && u.password === password
+    );
+    if (!encontrado) return null;
+    const dados = { username: encontrado.username, nome: encontrado.nome, role: encontrado.role };
+    sessionStorage.setItem('usuarioLogado', JSON.stringify(dados));
+    return dados;
+  },
+
+  logout() {
+    sessionStorage.removeItem('usuarioLogado');
+    alert('Logout realizado com sucesso!');
+    location.reload();
+  },
+};
+
+// SISTEMA DE ALTERAÇÕES (localStorage)
+
+const Alteracoes = {
+  _get() {
+    return JSON.parse(localStorage.getItem('alteracoes') || '{}');
+  },
+
+  salvar(tipo, id, valor, classe) {
+    const alteracoes = this._get();
+    alteracoes[id] = {
+      tipo, id, classe, valor,
+      data: new Date().toISOString(),
+      usuario: Auth.getUsuario()?.username,
+    };
+    localStorage.setItem('alteracoes', JSON.stringify(alteracoes));
+    UI.notificacao('✓ Alteração salva com sucesso!', 'success');
+  },
+
+  carregar() {
+    const seletoresTexto = '.about-text,.hero-subtitle,.servico-texto,.sobre-texto,.depo-texto,.hero-title,.about-title,.services-title,.depoimentos-title';
+    const seletoresImg   = '.hero-photo img,.foto-alice,.foto-consultoria,.foto-bloco,.hero-slide img';
+
+    Object.values(this._get()).forEach(alt => {
+      if (alt.tipo === 'texto') {
+        const elementos = $$(seletoresTexto);
+        const el = elementos.find((_, i) => `texto-${i}` === alt.id || `titulo-${i}` === alt.id);
+        if (el?.childNodes[0]) el.childNodes[0].textContent = alt.valor;
+
+      } else if (alt.tipo === 'imagem') {
+        const imgs = $$(seletoresImg);
+        const img  = imgs.find((_, i) => `img-${i}` === alt.id);
+        if (img) img.src = alt.valor;
+      }
     });
-  }
-}
+  },
 
-// Atualiza a interface baseado no login
-function atualizarInterface() {
-  const usuario = verificarLogin();
-  const userIcon = document.querySelector('.user-icon');
-  
-  if (usuario) {
-    // Muda o ícone para indicar usuário logado
-    if (userIcon) {
-      userIcon.innerHTML = '<i class="fas fa-user-circle"></i>';
-      userIcon.title = `Logado como: ${usuario.nome} (${usuario.role})`;
-      userIcon.style.color = '#B87E58';
-    }
-    
-    // Se tem permissão de edição, mostra os controles
-    if (temPermissaoEdicao()) {
-      mostrarControlesEdicao();
-    }
-    
-    // Adiciona botão de logout no menu
-    setTimeout(adicionarBotaoLogout, 500);
-  } else {
-    // Remove controles de edição
-    ocultarControlesEdicao();
-  }
-}
-
-// Mostra controles de edição
-function mostrarControlesEdicao() {
-  // Adiciona botões de edição em textos
-  const textos = document.querySelectorAll('.about-text, .hero-subtitle, .servico-texto, .sobre-texto, .depo-texto');
-  textos.forEach((texto, index) => {
-    if (!texto.querySelector('.btn-editar')) {
-      texto.style.position = 'relative';
-      texto.style.paddingBottom = '50px';
-      
-      const btnEditar = document.createElement('button');
-      btnEditar.className = 'btn-editar';
-      btnEditar.innerHTML = '<i class="fas fa-edit"></i> Editar';
-      btnEditar.onclick = () => editarTexto(texto, `texto-${index}`);
-      texto.appendChild(btnEditar);
-    }
-  });
-  
-  // Adiciona botões de edição em títulos
-  const titulos = document.querySelectorAll('.hero-title, .about-title, .services-title, .depoimentos-title');
-  titulos.forEach((titulo, index) => {
-    if (!titulo.querySelector('.btn-editar')) {
-      titulo.style.position = 'relative';
-      titulo.style.paddingRight = '60px';
-      
-      const btnEditar = document.createElement('button');
-      btnEditar.className = 'btn-editar btn-editar-titulo';
-      btnEditar.innerHTML = '<i class="fas fa-edit"></i>';
-      btnEditar.onclick = () => editarTexto(titulo, `titulo-${index}`);
-      titulo.appendChild(btnEditar);
-    }
-  });
-  
-  // Adiciona botões de edição em imagens
-  const imagens = document.querySelectorAll('.hero-photo img, .foto-alice, .foto-consultoria, .foto-bloco, .hero-slide img');
-  imagens.forEach((img, index) => {
-    if (!img.parentElement.querySelector('.btn-editar-img')) {
-      img.parentElement.style.position = 'relative';
-      
-      const btnEditarImg = document.createElement('button');
-      btnEditarImg.className = 'btn-editar-img';
-      btnEditarImg.innerHTML = '<i class="fas fa-image"></i>';
-      btnEditarImg.onclick = () => editarImagem(img, `img-${index}`);
-      img.parentElement.appendChild(btnEditarImg);
-    }
-  });
-  
-  // Mostra painel de admin se for admin
-  if (isAdmin()) {
-    setTimeout(mostrarPainelAdmin, 1000);
-  }
-}
-
-// Oculta controles de edição
-function ocultarControlesEdicao() {
-  document.querySelectorAll('.btn-editar, .btn-editar-img, .painel-admin').forEach(el => el.remove());
-  
-  // Remove padding extra
-  const textos = document.querySelectorAll('.about-text, .hero-subtitle, .servico-texto, .sobre-texto, .depo-texto');
-  textos.forEach(texto => {
-    texto.style.paddingBottom = '';
-  });
-}
-
-// Função para editar texto
-function editarTexto(elemento, id) {
-  // Remove o botão de editar do texto para pegar apenas o conteúdo
-  const btnEditar = elemento.querySelector('.btn-editar');
-  if (btnEditar) btnEditar.style.display = 'none';
-  
-  const textoAtual = elemento.textContent.trim();
-  
-  if (btnEditar) btnEditar.style.display = '';
-  
-  const novoTexto = prompt('Editar texto:', textoAtual);
-  
-  if (novoTexto !== null && novoTexto.trim() !== '') {
-    // Atualiza o texto mantendo o botão
-    elemento.childNodes[0].textContent = novoTexto;
-    
-    // Salva a alteração
-    salvarAlteracao('texto', id, novoTexto, elemento.className);
-  }
-}
-
-// Função para editar imagem
-function editarImagem(img, id) {
-  const novaUrl = prompt('Cole a URL da nova imagem:', img.src);
-  
-  if (novaUrl !== null && novaUrl.trim() !== '') {
-    img.src = novaUrl;
-    
-    // Salva a alteração
-    salvarAlteracao('imagem', id, novaUrl, img.className);
-  }
-}
-
-// Função para salvar alterações no localStorage
-function salvarAlteracao(tipo, id, valor, classe) {
-  const alteracoes = JSON.parse(localStorage.getItem('alteracoes') || '{}');
-  
-  alteracoes[id] = {
-    tipo: tipo,
-    id: id,
-    classe: classe,
-    valor: valor,
-    data: new Date().toISOString(),
-    usuario: verificarLogin().username
-  };
-  
-  localStorage.setItem('alteracoes', JSON.stringify(alteracoes));
-  
-  // Feedback visual
-  mostrarNotificacao('✓ Alteração salva com sucesso!', 'success');
-}
-
-// Carrega alterações salvas
-function carregarAlteracoes() {
-  const alteracoes = JSON.parse(localStorage.getItem('alteracoes') || '{}');
-  
-  Object.values(alteracoes).forEach(alt => {
-    if (alt.tipo === 'texto') {
-      // Tenta encontrar o elemento pelo índice
-      const textos = document.querySelectorAll('.about-text, .hero-subtitle, .servico-texto, .sobre-texto, .depo-texto, .hero-title, .about-title, .services-title, .depoimentos-title');
-      const elemento = Array.from(textos).find((el, index) => {
-        return `texto-${index}` === alt.id || `titulo-${index}` === alt.id;
-      });
-      
-      if (elemento) {
-        elemento.childNodes[0].textContent = alt.valor;
-      }
-    } else if (alt.tipo === 'imagem') {
-      const imagens = document.querySelectorAll('.hero-photo img, .foto-alice, .foto-consultoria, .foto-bloco, .hero-slide img');
-      const img = Array.from(imagens).find((el, index) => `img-${index}` === alt.id);
-      
-      if (img) {
-        img.src = alt.valor;
-      }
-    }
-  });
-}
-
-// Mostra notificação
-function mostrarNotificacao(mensagem, tipo = 'info') {
-  // Remove notificação anterior se existir
-  const notifAnterior = document.querySelector('.notificacao');
-  if (notifAnterior) notifAnterior.remove();
-  
-  const notif = document.createElement('div');
-  notif.className = `notificacao notificacao-${tipo}`;
-  notif.textContent = mensagem;
-  document.body.appendChild(notif);
-  
-  // Mostra a notificação
-  setTimeout(() => notif.classList.add('show'), 10);
-  
-  // Remove após 3 segundos
-  setTimeout(() => {
-    notif.classList.remove('show');
-    setTimeout(() => notif.remove(), 300);
-  }, 3000);
-}
-
-// Painel de administração
-function mostrarPainelAdmin() {
-  if (document.querySelector('.painel-admin')) return;
-  
-  const painel = document.createElement('div');
-  painel.className = 'painel-admin';
-  painel.innerHTML = `
-    <div class="painel-header">
-      <h3><i class="fas fa-cog"></i> Painel Admin</h3>
-      <button class="btn-fechar-painel">×</button>
-    </div>
-    <div class="painel-conteudo">
-      <button class="btn-admin" onclick="verHistorico()">
-        <i class="fas fa-history"></i> Ver Histórico
-      </button>
-      <button class="btn-admin" onclick="verUsuarios()">
-        <i class="fas fa-users"></i> Usuários
-      </button>
-      <button class="btn-admin" onclick="resetarAlteracoes()">
-        <i class="fas fa-undo"></i> Resetar Alterações
-      </button>
-    </div>
-  `;
-  
-  document.body.appendChild(painel);
-  
-  document.querySelector('.btn-fechar-painel').onclick = () => {
-    painel.remove();
-  };
-}
-
-// Ver histórico de alterações
-function verHistorico() {
-  const alteracoes = JSON.parse(localStorage.getItem('alteracoes') || '{}');
-  const arrayAlteracoes = Object.values(alteracoes);
-  
-  if (arrayAlteracoes.length === 0) {
-    alert('Nenhuma alteração registrada.');
-    return;
-  }
-  
-  let historico = '📋 HISTÓRICO DE ALTERAÇÕES\n';
-  historico += '═'.repeat(40) + '\n\n';
-  
-  arrayAlteracoes.forEach((alt, index) => {
-    historico += `${index + 1}. ${alt.tipo.toUpperCase()}\n`;
-    historico += `   ID: ${alt.id}\n`;
-    historico += `   Usuário: ${alt.usuario}\n`;
-    historico += `   Data: ${new Date(alt.data).toLocaleString('pt-BR')}\n`;
-    historico += `   Valor: ${alt.valor.substring(0, 50)}${alt.valor.length > 50 ? '...' : ''}\n\n`;
-  });
-  
-  alert(historico);
-}
-
-// Ver usuários disponíveis
-function verUsuarios() {
-  const info = `
-👥 USUÁRIOS DO SISTEMA
-
-═══════════════════════════════════
-
-🔴 ADMIN
-   Usuário: admin
-   Senha: 123456
-   Permissões: Todas
-
-🔴 ADMIN
-   Usuário: alice
-   Senha: alice123
-   Permissões: Todas
-
-🟡 EDITOR
-   Usuário: editor
-   Senha: editor123
-   Permissões: Editar textos e imagens
-
-🟢 USUÁRIO COMUM
-   Usuário: usuario
-   Senha: user123
-   Permissões: Apenas visualização
-  `;
-  
-  alert(info);
-}
-
-// Resetar alterações
-function resetarAlteracoes() {
-  if (confirm('⚠️ Tem certeza que deseja resetar todas as alterações?\n\nEsta ação não pode ser desfeita e todas as edições serão perdidas.')) {
+  resetar() {
+    if (!confirm('⚠️ Resetar todas as alterações? Esta ação não pode ser desfeita.')) return;
     localStorage.removeItem('alteracoes');
-    mostrarNotificacao('✓ Alterações resetadas!', 'success');
+    UI.notificacao('✓ Alterações resetadas!', 'success');
     setTimeout(() => location.reload(), 1500);
-  }
+  },
+
+  historico() {
+    const lista = Object.values(this._get());
+    if (!lista.length) { alert('Nenhuma alteração registrada.'); return; }
+
+    const texto = lista.map((alt, i) => [
+      `${i + 1}. ${alt.tipo.toUpperCase()}`,
+      `   ID: ${alt.id}`,
+      `   Usuário: ${alt.usuario}`,
+      `   Data: ${new Date(alt.data).toLocaleString('pt-BR')}`,
+      `   Valor: ${alt.valor.substring(0, 50)}${alt.valor.length > 50 ? '...' : ''}`,
+    ].join('\n')).join('\n\n');
+
+    alert(`📋 HISTÓRICO DE ALTERAÇÕES\n${'═'.repeat(40)}\n\n${texto}`);
+  },
+};
+
+// INTERFACE / FEEDBACK VISUAL
+
+const UI = {
+  notificacao(mensagem, tipo = 'info') {
+    $('.notificacao')?.remove();
+    const el = document.createElement('div');
+    el.className = `notificacao notificacao-${tipo}`;
+    el.textContent = mensagem;
+    document.body.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('show'));
+    setTimeout(() => {
+      el.classList.remove('show');
+      setTimeout(() => el.remove(), 300);
+    }, 3000);
+  },
+};
+
+// CONTROLES DE EDIÇÃO
+
+const Editor = {
+  mostrar() {
+    const TEXTOS  = '.about-text,.hero-subtitle,.servico-texto,.sobre-texto,.depo-texto';
+    const TITULOS = '.hero-title,.about-title,.services-title,.depoimentos-title';
+    const IMAGENS = '.hero-photo img,.foto-alice,.foto-consultoria,.foto-bloco,.hero-slide img';
+
+    $$(TEXTOS).forEach((el, i) => {
+      if (el.querySelector('.btn-editar')) return;
+      Object.assign(el.style, { position: 'relative', paddingBottom: '50px' });
+      el.appendChild(this._btnTexto(el, `texto-${i}`));
+    });
+
+    $$(TITULOS).forEach((el, i) => {
+      if (el.querySelector('.btn-editar')) return;
+      Object.assign(el.style, { position: 'relative', paddingRight: '60px' });
+      const btn = this._btnTexto(el, `titulo-${i}`);
+      btn.classList.add('btn-editar-titulo');
+      btn.innerHTML = '<i class="fas fa-edit"></i>';
+      el.appendChild(btn);
+    });
+
+    $$(IMAGENS).forEach((img, i) => {
+      if (img.parentElement.querySelector('.btn-editar-img')) return;
+
+      // FIX: preserva position:absolute dos slides do hero slider
+      const posAtual = getComputedStyle(img.parentElement).position;
+      if (posAtual !== 'absolute') img.parentElement.style.position = 'relative';
+
+      const btn = document.createElement('button');
+      btn.className = 'btn-editar-img';
+      btn.innerHTML = '<i class="fas fa-image"></i>';
+      btn.onclick = () => {
+        const novaUrl = prompt('Cole a URL da nova imagem:', img.src);
+        if (novaUrl?.trim()) {
+          img.src = novaUrl.trim();
+          Alteracoes.salvar('imagem', `img-${i}`, novaUrl.trim(), img.className);
+        }
+      };
+      img.parentElement.appendChild(btn);
+    });
+  },
+
+  ocultar() {
+    $$('.btn-editar, .btn-editar-img, .painel-admin').forEach(el => el.remove());
+    $$('.about-text,.hero-subtitle,.servico-texto,.sobre-texto,.depo-texto')
+      .forEach(el => (el.style.paddingBottom = ''));
+  },
+
+  _btnTexto(elemento, id) {
+    const btn = document.createElement('button');
+    btn.className = 'btn-editar';
+    btn.innerHTML = '<i class="fas fa-edit"></i> Editar';
+    btn.onclick = () => {
+      const btnEl = elemento.querySelector('.btn-editar');
+      if (btnEl) btnEl.style.display = 'none';
+      const textoAtual = elemento.textContent.trim();
+      if (btnEl) btnEl.style.display = '';
+      const novo = prompt('Editar texto:', textoAtual);
+      if (novo?.trim()) {
+        elemento.childNodes[0].textContent = novo.trim();
+        Alteracoes.salvar('texto', id, novo.trim(), elemento.className);
+      }
+    };
+    return btn;
+  },
+};
+
+// PAINEL DE ADMINISTRAÇÃO
+
+const PainelAdmin = {
+  mostrar() {
+    if ($('.painel-admin')) return;
+    const painel = document.createElement('div');
+    painel.className = 'painel-admin';
+    painel.innerHTML = `
+      <div class="painel-header">
+        <h3><i class="fas fa-cog"></i> Painel Admin</h3>
+        <button class="btn-fechar-painel">×</button>
+      </div>
+      <div class="painel-conteudo">
+        <button class="btn-admin" id="btn-historico"><i class="fas fa-history"></i> Ver Histórico</button>
+        <button class="btn-admin" id="btn-usuarios"><i class="fas fa-users"></i> Usuários</button>
+        <button class="btn-admin" id="btn-resetar"><i class="fas fa-undo"></i> Resetar Alterações</button>
+      </div>
+    `;
+    document.body.appendChild(painel);
+
+    painel.querySelector('.btn-fechar-painel').onclick = () => painel.remove();
+    $('#btn-historico', painel).onclick = () => Alteracoes.historico();
+    $('#btn-usuarios',  painel).onclick = () => this._verUsuarios();
+    $('#btn-resetar',   painel).onclick = () => Alteracoes.resetar();
+  },
+
+  _verUsuarios() {
+    alert(`👥 USUÁRIOS DO SISTEMA\n${'═'.repeat(35)}\n
+🔴 ADMIN      | admin   / 123456
+🔴 ADMIN      | alice   / alice123
+🟡 EDITOR     | editor  / editor123
+🟢 USUÁRIO    | usuario / user123`);
+  },
+};
+
+// BOTÃO FIXO DE ENGRENAGEM (ABRE/FECHA PAINEL ADMIN)
+
+function initBotaoAdmin() {
+  if ($('.btn-engrenagem')) return;
+
+  const btn = document.createElement('button');
+  btn.className = 'btn-engrenagem';
+  btn.innerHTML = '<i class="fas fa-cog"></i>';
+  btn.title = 'Painel Admin';
+  btn.addEventListener('click', () => {
+    const painelExistente = $('.painel-admin');
+    if (painelExistente) {
+      painelExistente.remove();
+    } else {
+      PainelAdmin.mostrar();
+    }
+  });
+
+  document.body.appendChild(btn);
 }
 
-// =============================================
-// MODAL DE LOGIN COM VALIDAÇÃO
-// =============================================
+// MODAL DE LOGIN
 
-function inicializarModal() {
-  const userIcon = document.querySelector('.user-icon');
-  const loginModal = document.getElementById('loginModal');
-  const closeModal = document.getElementById('closeModal');
-  const loginForm = document.getElementById('loginForm');
-  const usernameInput = document.getElementById('username');
-  const passwordInput = document.getElementById('password');
+const Modal = {
+  init() {
+    const userIcon  = $('.user-icon');
+    const modal     = $('#loginModal');
+    const closeBtn  = $('#closeModal');
+    const form      = $('#loginForm');
+    const userInput = $('#username');
+    const passInput = $('#password');
 
-  if (!userIcon || !loginModal) {
-    setTimeout(inicializarModal, 100);
-    return;
-  }
-
-  // Abre o modal ao clicar no ícone de usuário
-  userIcon.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Se já estiver logado, mostra opções
-    const usuario = verificarLogin();
-    if (usuario) {
-      if (confirm(`Você está logado como: ${usuario.nome}\n\nDeseja fazer logout?`)) {
-        fazerLogout();
-      }
+    if (!userIcon || !modal) {
+      setTimeout(() => this.init(), 100);
       return;
     }
-    
-    loginModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  });
 
-  // Fecha o modal ao clicar no X
-  if (closeModal) {
-    closeModal.addEventListener('click', () => {
-      fecharModal();
-    });
-  }
-
-  // Fecha o modal ao clicar fora dele
-  loginModal.addEventListener('click', (e) => {
-    if (e.target === loginModal) {
-      fecharModal();
-    }
-  });
-
-  // Fecha com tecla ESC
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && loginModal.classList.contains('active')) {
-      fecharModal();
-    }
-  });
-
-  // Função para fechar modal
-  function fecharModal() {
-    loginModal.classList.remove('active');
-    document.body.style.overflow = '';
-    limparErros();
-    if (loginForm) loginForm.reset();
-  }
-
-  // Função para mostrar erro
-  function mostrarErro(input, mensagem) {
-    limparErro(input);
-    input.classList.add('input-error');
-    const erro = document.createElement('span');
-    erro.className = 'error-message';
-    erro.textContent = mensagem;
-    input.parentElement.insertAdjacentElement('afterend', erro);
-  }
-
-  // Função para limpar erro de um input específico
-  function limparErro(input) {
-    input.classList.remove('input-error');
-    const erro = input.parentElement.nextElementSibling;
-    if (erro && erro.classList.contains('error-message')) {
-      erro.remove();
-    }
-  }
-
-  // Função para limpar todos os erros
-  function limparErros() {
-    const erros = document.querySelectorAll('.error-message');
-    erros.forEach(erro => erro.remove());
-    const inputsComErro = document.querySelectorAll('.input-error');
-    inputsComErro.forEach(input => input.classList.remove('input-error'));
-  }
-
-  // Validação em tempo real
-  if (usernameInput) {
-    usernameInput.addEventListener('input', () => {
-      if (usernameInput.classList.contains('input-error')) {
-        limparErro(usernameInput);
-      }
-    });
-  }
-
-  if (passwordInput) {
-    passwordInput.addEventListener('input', () => {
-      if (passwordInput.classList.contains('input-error')) {
-        limparErro(passwordInput);
-      }
-    });
-  }
-
-  // Validação do formulário
-  if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
+    userIcon.addEventListener('click', e => {
       e.preventDefault();
-      limparErros();
-      
-      const username = usernameInput.value.trim();
-      const password = passwordInput.value.trim();
-      let isValid = true;
-      
-      if (username === '') {
-        mostrarErro(usernameInput, 'Por favor, insira seu usuário');
-        isValid = false;
-      } else if (username.length < 3) {
-        mostrarErro(usernameInput, 'O usuário deve ter pelo menos 3 caracteres');
-        isValid = false;
+      e.stopPropagation();
+      if (Auth.logado()) {
+        if (confirm(`Logado como: ${Auth.getUsuario().nome}\n\nDeseja fazer logout?`)) Auth.logout();
+        return;
       }
-      
-      if (password === '') {
-        mostrarErro(passwordInput, 'Por favor, insira sua senha');
-        isValid = false;
-      } else if (password.length < 6) {
-        mostrarErro(passwordInput, 'A senha deve ter pelo menos 6 caracteres');
-        isValid = false;
-      }
-      
-      if (!isValid) return;
-      
-      // Sistema de usuários com permissões
-      const usuariosValidos = [
-        { 
-          username: 'admin', 
-          password: '123456', 
-          role: 'admin',
-          nome: 'Administrador'
-        },
-        { 
-          username: 'alice', 
-          password: 'alice123', 
-          role: 'admin',
-          nome: 'Alice Mendes'
-        },
-        { 
-          username: 'editor', 
-          password: 'editor123', 
-          role: 'editor',
-          nome: 'Editor'
-        },
-        { 
-          username: 'usuario', 
-          password: 'user123', 
-          role: 'user',
-          nome: 'Usuário Comum'
-        }
-      ];
-      
-      const usuarioEncontrado = usuariosValidos.find(
-        user => user.username === username && user.password === password
-      );
-      
-      if (usuarioEncontrado) {
-        // Salva os dados do usuário na sessão
-        sessionStorage.setItem('usuarioLogado', JSON.stringify({
-          username: usuarioEncontrado.username,
-          nome: usuarioEncontrado.nome,
-          role: usuarioEncontrado.role
-        }));
-        
-        fecharModal();
-        mostrarNotificacao(`✓ Bem-vindo(a), ${usuarioEncontrado.nome}!`, 'success');
-        
-        // Recarrega a página para mostrar os controles de edição
+      this._abrir(modal);
+    });
+
+    closeBtn?.addEventListener('click',  () => this._fechar(modal, form));
+    modal.addEventListener('click', e => { if (e.target === modal) this._fechar(modal, form); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) this._fechar(modal, form);
+    });
+
+    [userInput, passInput].forEach(input => {
+      input?.addEventListener('input', () => this._limparErro(input));
+    });
+
+    form?.addEventListener('submit', e => {
+      e.preventDefault();
+      this._limparErros();
+
+      const username = userInput.value.trim();
+      const password = passInput.value.trim();
+      let valido = true;
+
+      if (!username)                { this._erro(userInput, 'Insira seu usuário');   valido = false; }
+      else if (username.length < 3) { this._erro(userInput, 'Mínimo 3 caracteres'); valido = false; }
+      if (!password)                { this._erro(passInput, 'Insira sua senha');     valido = false; }
+      else if (password.length < 6) { this._erro(passInput, 'Mínimo 6 caracteres'); valido = false; }
+
+      if (!valido) return;
+
+      const usuario = Auth.login(username, password);
+      if (usuario) {
+        this._fechar(modal, form);
+        UI.notificacao(`✓ Bem-vindo(a), ${usuario.nome}!`, 'success');
         setTimeout(() => location.reload(), 1500);
       } else {
-        mostrarErro(passwordInput, 'Usuário ou senha incorretos');
-        passwordInput.value = '';
+        passInput.value = '';
+        this._erro(passInput, 'Usuário ou senha incorretos');
       }
     });
+  },
+
+  _abrir(modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  },
+
+  _fechar(modal, form) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    this._limparErros();
+    form?.reset();
+  },
+
+  _erro(input, msg) {
+    input.classList.add('input-error');
+    const span = document.createElement('span');
+    span.className = 'error-message';
+    span.textContent = msg;
+    input.parentElement.insertAdjacentElement('afterend', span);
+  },
+
+  _limparErro(input) {
+    input.classList.remove('input-error');
+    const next = input.parentElement.nextElementSibling;
+    if (next?.classList.contains('error-message')) next.remove();
+  },
+
+  _limparErros() {
+    $$('.error-message').forEach(el => el.remove());
+    $$('.input-error').forEach(el => el.classList.remove('input-error'));
+  },
+};
+
+// ATUALIZA INTERFACE BASEADO NO LOGIN
+
+function atualizarInterface() {
+  const usuario  = Auth.getUsuario();
+  const userIcon = $('.user-icon');
+
+  if (usuario) {
+    if (userIcon) {
+      userIcon.innerHTML = '<i class="fas fa-user-circle"></i>';
+      userIcon.title     = `Logado como: ${usuario.nome} (${usuario.role})`;
+      userIcon.style.color = '#B87E58';
+    }
+    if (Auth.temPermissaoEdicao()) Editor.mostrar();
+    if (Auth.isAdmin()) initBotaoAdmin();
+
+    // Botão logout no menu
+    setTimeout(() => {
+      const nav = $('.nav-menu');
+      if (nav && !$('.logout-btn')) {
+        const li = document.createElement('li');
+        li.innerHTML = '<a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>';
+        nav.appendChild(li);
+        $('.logout-btn').addEventListener('click', e => { e.preventDefault(); Auth.logout(); });
+      }
+    }, 500);
+  } else {
+    Editor.ocultar();
   }
 }
 
-// =============================================
 // SLIDER HERO (AUTOMÁTICO)
-// =============================================
-if (document.querySelector('.hero-slider')) {
-  const heroSlides = document.querySelectorAll('.hero-slide');
-  let heroIndex = 0;
 
-  function nextHeroSlide() {
-    heroSlides[heroIndex].classList.remove('active');
-    heroIndex = (heroIndex + 1) % heroSlides.length;
-    heroSlides[heroIndex].classList.add('active');
-  }
-
-  setInterval(nextHeroSlide, 5000);
-  heroSlides[0].classList.add('active');
+function initHeroSlider() {
+  const slides = $$('.hero-slide');
+  if (!slides.length) return;
+  let idx = 0;
+  slides[0].classList.add('active');
+  setInterval(() => {
+    slides[idx].classList.remove('active');
+    idx = (idx + 1) % slides.length;
+    slides[idx].classList.add('active');
+  }, 5000);
 }
 
-// =============================================
-// SLIDER PRINCIPAL COM SETAS E PONTINHOS
-// =============================================
-let slideIndex = 1;
-showSlides(slideIndex);
+// SLIDER PRINCIPAL (SETAS + BOLINHAS)
 
-function plusSlides(n) {
-  showSlides(slideIndex += n);
-}
-
-function currentSlide(n) {
-  showSlides(slideIndex = n);
-}
-
-function showSlides(n) {
-  let slides = document.getElementsByClassName("slide");
-  let dots = document.getElementsByClassName("dot");
-
+function initSliderPrincipal() {
+  const slides = $$('.slide');
+  const dots   = $$('.dot');
   if (!slides.length) return;
 
-  if (n > slides.length) { slideIndex = 1 }
-  if (n < 1) { slideIndex = slides.length }
+  let idx = 0;
 
-  for (let i = 0; i < slides.length; i++) {
-    slides[i].classList.remove("active");
-  }
-  for (let i = 0; i < dots.length; i++) {
-    dots[i].classList.remove("active");
+  function mostrar(n) {
+    slides.forEach(s => s.classList.remove('active'));
+    dots.forEach(d => d.classList.remove('active'));
+    idx = (n + slides.length) % slides.length;
+    slides[idx].classList.add('active');
+    if (dots[idx]) dots[idx].classList.add('active');
   }
 
-  slides[slideIndex - 1].classList.add("active");
-  if (dots.length) dots[slideIndex - 1].classList.add("active");
+  window.currentSlide = n => mostrar(n - 1);
+
+  $('.prev')?.addEventListener('click', () => mostrar(idx - 1));
+  $('.next')?.addEventListener('click', () => mostrar(idx + 1));
+
+  mostrar(0);
+  setInterval(() => mostrar(idx + 1), 6000);
 }
 
-// Eventos das setas
-const prevBtn = document.querySelector(".prev");
-const nextBtn = document.querySelector(".next");
-
-if (prevBtn) prevBtn.addEventListener("click", () => plusSlides(-1));
-if (nextBtn) nextBtn.addEventListener("click", () => plusSlides(1));
-
-// Auto play
-setInterval(() => {
-  plusSlides(1);
-}, 6000);
-
-// =============================================
 // SLIDER DE DEPOIMENTOS
-// =============================================
-let depoIndex = 0;
-const depoSlides = document.querySelectorAll(".depo-slide");
 
-function mostrarDepo(i) {
-  depoSlides.forEach(s => s.classList.remove("active"));
-  if (depoSlides[i]) depoSlides[i].classList.add("active");
-}
+function initDepoimentos() {
+  const slides = $$('.depo-slide');
+  if (!slides.length) return;
+  let idx = 0;
 
-const depoPrev = document.querySelector(".depo-prev");
-const depoNext = document.querySelector(".depo-next");
-
-if (depoPrev) {
-  depoPrev.addEventListener("click", () => {
-    depoIndex = (depoIndex - 1 + depoSlides.length) % depoSlides.length;
-    mostrarDepo(depoIndex);
-  });
-}
-
-if (depoNext) {
-  depoNext.addEventListener("click", () => {
-    depoIndex = (depoIndex + 1) % depoSlides.length;
-    mostrarDepo(depoIndex);
-  });
-}
-
-// =============================================
-// FECHA MENU HAMBURGER AO CLICAR EM LINKS
-// =============================================
-document.addEventListener('DOMContentLoaded', function () {
-  const menuToggle = document.getElementById('menu-toggle');
-  const menuLinks = document.querySelectorAll('.nav-menu a');
-
-  if (menuToggle && menuLinks.length > 0) {
-    menuLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        menuToggle.checked = false;
-      });
-    });
+  function mostrar(n) {
+    slides.forEach(s => s.classList.remove('active'));
+    idx = (n + slides.length) % slides.length;
+    slides[idx].classList.add('active');
   }
-});
 
-// =============================================
+  $('.depo-prev')?.addEventListener('click', () => mostrar(idx - 1));
+  $('.depo-next')?.addEventListener('click', () => mostrar(idx + 1));
+  mostrar(0);
+}
+
+// FECHAR MENU AO CLICAR EM LINKS
+
+function initMenuLinks() {
+  const toggle = $('#menu-toggle');
+  if (!toggle) return;
+  $$('.nav-menu a').forEach(link => {
+    link.addEventListener('click', () => (toggle.checked = false));
+  });
+}
+
 // CALENDÁRIO DE AGENDAMENTO
-// =============================================
-if (document.getElementById('calendario-dias')) {
-  const mesAtual = new Date();
-  let mesExibido = new Date(mesAtual);
+
+function initCalendario() {
+  const container = $('#calendario-dias');
+  if (!container) return;
+
+  const MESES     = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const MESES_MIN = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const DIAS_SEM  = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+
+  const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  let mesAtual = new Date(hoje);
   let diaSelecionado = null;
 
-  function renderizarCalendario() {
-    const ano = mesExibido.getFullYear();
-    const mes = mesExibido.getMonth();
-    
-    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
-                   'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-    document.getElementById('mes-ano').textContent = `${meses[mes]} ${ano}`;
+  function renderizar() {
+    const ano = mesAtual.getFullYear();
+    const mes = mesAtual.getMonth();
+    $('#mes-ano').textContent = `${MESES[mes]} ${ano}`;
+    container.innerHTML = '';
 
     const primeiroDia = new Date(ano, mes, 1).getDay();
-    const ultimoDia = new Date(ano, mes + 1, 0).getDate();
-
-    const calendarioDias = document.getElementById('calendario-dias');
-    calendarioDias.innerHTML = '';
+    const ultimoDia   = new Date(ano, mes + 1, 0).getDate();
 
     for (let i = 0; i < primeiroDia; i++) {
-      const diaVazio = document.createElement('div');
-      diaVazio.classList.add('dia', 'vazio');
-      calendarioDias.appendChild(diaVazio);
+      const vazio = document.createElement('div');
+      vazio.className = 'dia vazio';
+      container.appendChild(vazio);
     }
 
-    for (let dia = 1; dia <= ultimoDia; dia++) {
-      const diaElemento = document.createElement('div');
-      diaElemento.classList.add('dia');
-      diaElemento.textContent = dia;
+    for (let d = 1; d <= ultimoDia; d++) {
+      const el   = document.createElement('div');
+      const data = new Date(ano, mes, d);
+      el.className = 'dia';
+      el.textContent = d;
 
-      const dataAtual = new Date(ano, mes, dia);
-      const hoje = new Date();
-      hoje.setHours(0, 0, 0, 0);
+      if (data.getTime() === hoje.getTime()) el.classList.add('hoje');
 
-      if (dataAtual.getTime() === hoje.getTime()) {
-        diaElemento.classList.add('hoje');
-      }
-
-      if (dataAtual < hoje) {
-        diaElemento.classList.add('indisponivel');
+      if (data < hoje) {
+        el.classList.add('indisponivel');
       } else {
-        diaElemento.addEventListener('click', () => selecionarDia(diaElemento, dia));
-        
-        if (dia === 27) {
-          diaElemento.classList.add('tem-compromisso');
-        }
+        if (d === 27) el.classList.add('tem-compromisso');
+        el.addEventListener('click', () => selecionar(el, d));
       }
 
-      calendarioDias.appendChild(diaElemento);
+      container.appendChild(el);
+    }
+
+    if (diaSelecionado) {
+      const diaEl = [...container.querySelectorAll('.dia:not(.vazio):not(.indisponivel)')]
+        .find(el => +el.textContent === diaSelecionado);
+      if (diaEl) diaEl.classList.add('selecionado');
     }
   }
 
-  function selecionarDia(elemento, dia) {
-    document.querySelectorAll('.dia.selecionado').forEach(d => d.classList.remove('selecionado'));
-    elemento.classList.add('selecionado');
+  function selecionar(el, dia) {
+    $$('.dia.selecionado').forEach(d => d.classList.remove('selecionado'));
+    el.classList.add('selecionado');
     diaSelecionado = dia;
 
-    const btnProximo = document.querySelector('.btn-proximo');
-    if (btnProximo) {
-      btnProximo.classList.add('ativo');
-    }
-    
-    const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 
-                   'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
-    const diaSemana = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
-    const data = new Date(mesExibido.getFullYear(), mesExibido.getMonth(), dia);
-    
-    const disponibilidadeInfo = document.querySelector('.disponibilidade-info');
-    if (disponibilidadeInfo) {
-      disponibilidadeInfo.innerHTML = `
-        <p>Disponibilidade para <strong>${diaSemana[data.getDay()]}, ${dia} de ${meses[mesExibido.getMonth()]}</strong></p>
-        <p style="margin-top: 10px;">Indisponível</p>
+    $('.btn-proximo')?.classList.add('ativo');
+
+    const data = new Date(mesAtual.getFullYear(), mesAtual.getMonth(), dia);
+    const info = $('.disponibilidade-info');
+    if (info) {
+      info.innerHTML = `
+        <p>Disponibilidade para <strong>${DIAS_SEM[data.getDay()]}, ${dia} de ${MESES_MIN[mesAtual.getMonth()]}</strong></p>
+        <p style="margin-top:10px">Indisponível</p>
       `;
     }
   }
 
-  const btnMesAnterior = document.getElementById('mes-anterior');
-  const btnMesProximo = document.getElementById('mes-proximo');
+  $('#mes-anterior')?.addEventListener('click', () => { mesAtual.setMonth(mesAtual.getMonth() - 1); renderizar(); });
+  $('#mes-proximo')?.addEventListener('click',  () => { mesAtual.setMonth(mesAtual.getMonth() + 1); renderizar(); });
 
-  if (btnMesAnterior) {
-    btnMesAnterior.addEventListener('click', () => {
-      mesExibido.setMonth(mesExibido.getMonth() - 1);
-      renderizarCalendario();
-    });
-  }
-
-  if (btnMesProximo) {
-    btnMesProximo.addEventListener('click', () => {
-      mesExibido.setMonth(mesExibido.getMonth() + 1);
-      renderizarCalendario();
-    });
-  }
-
-  renderizarCalendario();
+  renderizar();
 
   setTimeout(() => {
-    const dia27 = Array.from(document.querySelectorAll('.dia')).find(d => d.textContent === '27' && !d.classList.contains('vazio'));
-    if (dia27) {
-      selecionarDia(dia27, 27);
-    }
+    const dia27 = [...$$('.dia')].find(el => el.textContent === '27' && !el.classList.contains('vazio'));
+    if (dia27) selecionar(dia27, 27);
   }, 100);
 }
 
-// =============================================
-// INICIALIZAÇÃO GLOBAL
-// =============================================
+// INICIALIZAÇÃO
 
-// Carrega alterações quando a página carregar
 document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    carregarAlteracoes();
-    atualizarInterface();
-    inicializarModal();
-  }, 200);
-});
+  initMenuLinks();
+  initHeroSlider();
+  initSliderPrincipal();
+  initDepoimentos();
+  initCalendario();
 
-// Também executa após carregamento completo
-window.addEventListener('load', () => {
-  atualizarInterface();
-  inicializarModal();
+  setTimeout(() => {
+    Alteracoes.carregar();
+    atualizarInterface();
+    Modal.init();
+  }, 200);
 });

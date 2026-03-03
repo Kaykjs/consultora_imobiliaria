@@ -1,76 +1,84 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobre</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alice Mendes</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/sobre.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
 </head>
+
 <body>
 
   <div id="header"></div>
-  
+
   <section class="sobre">
-  <!-- Fundo bege claro (parte superior) -->
-  <div class="sobre-bg-top"></div>
+    <!-- Fundo bege claro (parte superior) -->
+    <div class="sobre-bg-top"></div>
 
-  <!-- Fundo branco (parte inferior) -->
-  <div class="sobre-bg-bottom"></div>
+    <!-- Fundo branco (parte inferior) -->
+    <div class="sobre-bg-bottom"></div>
 
-  <div class="sobre-container">
-    <h1 class="sobre-title">Sobre</h1>
+    <div class="sobre-container">
+      <h1 class="sobre-title">Sobre</h1>
 
-    <!-- Conteúdo principal (mantido exatamente como estava) -->
-    <div class="sobre-layout">
-      <!-- Esquerda: bloco marrom com foto -->
-      <div class="sobre-esquerda">
-        <div class="bloco-marrom">
-          <img src="imagens/alice_sobre.avif" alt="Alice Mendes" class="foto-alice">
+      <!-- Conteúdo principal (mantido exatamente como estava) -->
+      <div class="sobre-layout">
+        <!-- Esquerda: bloco marrom com foto -->
+        <div class="sobre-esquerda">
+          <div class="bloco-marrom">
+            <img src="imagens/alice_sobre.avif" alt="Alice Mendes" class="foto-alice">
+          </div>
+        </div>
+
+        <!-- Direita: texto -->
+        <div class="sobre-direita">
+          <h2 class="sobre-nome">Alice Mendes,</h2>
+          <h3 class="sobre-subtitulo">Consultora Imobiliária Certificada</h3>
+          <p class="sobre-concretizando">Concretizando Seus Projetos</p>
+
+          <p class="sobre-texto">
+            Sou uma consultora imobiliária apaixonada por transformar sonhos em realidade.
+            Com anos de experiência no mercado, ofereço atendimento personalizado, transparência
+            e dedicação total para tornar sua jornada imobiliária simples e prazerosa.
+          </p>
+
+          <p class="sobre-texto">
+            Este é um ótimo espaço para escrever um texto longo sobre a sua empresa e seus serviços.
+            Use esse espaço para escrever detalhes sobre a sua empresa. Fale sobre a sua equipe e sobre os serviços
+            prestados por você.
+            Conte aos seus visitantes sobre como teve a ideia de iniciar o seu negócio e o que o torna diferente de seus
+            competidores.
+          </p>
+
+          <a href="index.html#contato" class="btn-contate">CONTATE-ME</a>
         </div>
       </div>
-
-      <!-- Direita: texto -->
-      <div class="sobre-direita">
-        <h2 class="sobre-nome">Alice Mendes,</h2>
-        <h3 class="sobre-subtitulo">Consultora Imobiliária Certificada</h3>
-        <p class="sobre-concretizando">Concretizando Seus Projetos</p>
-
-        <p class="sobre-texto">
-          Sou uma consultora imobiliária apaixonada por transformar sonhos em realidade. 
-          Com anos de experiência no mercado, ofereço atendimento personalizado, transparência 
-          e dedicação total para tornar sua jornada imobiliária simples e prazerosa.
-        </p>
-
-        <p class="sobre-texto">
-          Este é um ótimo espaço para escrever um texto longo sobre a sua empresa e seus serviços. 
-          Use esse espaço para escrever detalhes sobre a sua empresa. Fale sobre a sua equipe e sobre os serviços prestados por você. 
-          Conte aos seus visitantes sobre como teve a ideia de iniciar o seu negócio e o que o torna diferente de seus competidores.
-        </p>
-
-        <a href="index.html#contato" class="btn-contate">CONTATE-ME</a>
-      </div>
     </div>
-  </div>
-</section>
+  </section>
 
   <div id="footer"></div>
+  
+  <script src="main.js"></script>
 
-<script>
-// Carrega header e footer automaticamente
-fetch('includes/header.html')
-  .then(response => response.text())
-  .then(data => document.getElementById('header').innerHTML = data);
+  <script>
+    // Carrega header e footer automaticamente
+    fetch('includes/header.html')
+      .then(response => response.text())
+      .then(data => document.getElementById('header').innerHTML = data);
 
-fetch('includes/footer.html')
-  .then(response => response.text())
-  .then(data => document.getElementById('footer').innerHTML = data);
-</script>
+    fetch('includes/footer.html')
+      .then(response => response.text())
+      .then(data => document.getElementById('footer').innerHTML = data);
+  </script>
 
 </body>
+
 </html>
